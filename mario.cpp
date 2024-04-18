@@ -7,15 +7,20 @@
 mario::mario(QGraphicsPixmapItem *parent):QGraphicsPixmapItem (parent)
 {
     landed = false;
+
+    //初始位置跟圖片
     setPos(0,450);
     setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_R.png"));
+
+    //持續偵測的計時
     QTimer*timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()),this,SLOT(gravity()));
     connect(timer, SIGNAL(timeout()), this, SLOT(checkKeyState()));
-
     timer->start(10);
+
 }
 
+//按鍵按下事件
 void mario::keyPressEvent(QKeyEvent *event)
 {
 
@@ -25,11 +30,13 @@ void mario::keyPressEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_Right){
        rightKey = true;
     }
-    if((event->key() == Qt::Key_Up)&&((landed == true)||y() == 650)){
+    if((event->key() == Qt::Key_Up)&&((landed == true)||y() == 450)){
+        qDebug() << "jump";
         setPos(x(),y()-200);
     }
 }
 
+//按鍵放開事件
 void mario::keyReleaseEvent(QKeyEvent *reEvent)
 {
     if (reEvent->key() == Qt::Key_Right) {
@@ -43,6 +50,8 @@ void mario::keyReleaseEvent(QKeyEvent *reEvent)
         setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_L.png"));
     }
 }
+
+//因應按鍵按下改變位置
 void mario::checkKeyState()
 {
     if(rightKey == true){
@@ -63,6 +72,8 @@ void mario::checkKeyState()
     }
 
 }
+
+//給持續向下速度
 void mario::gravity(){
     if(!landed&&y() < 450){
         qDebug() << "1" <<endl;
