@@ -1,10 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "mario.h"
 #include <QLabel>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QGraphicsPixmapItem>
 #include <QScrollBar>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -43,10 +45,18 @@ MainWindow::MainWindow(QWidget *parent)
             scene->addItem(brickItem);
         }
 
-        QPixmap mario(":/new/prefix1/image/Mario_small/s_mario_stand_R.png");
+
+        //創建馬力歐
+        /*QPixmap mario(":/new/prefix1/image/Mario_small/s_mario_stand_R.png");
         QGraphicsPixmapItem *mari = new QGraphicsPixmapItem(mario);
         mari->setPos(0,400);
-        scene->addItem(mari);
+        scene->addItem(mari);*/
+        mario * player = new mario();
+            scene->addItem(player);
+
+            player->setFlag(QGraphicsItem::ItemIsFocusable);
+            player->setFocus();
+
 
         // 創建視圖並設置場景
         QGraphicsView *view = new QGraphicsView(scene);
