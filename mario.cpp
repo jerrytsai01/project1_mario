@@ -60,7 +60,7 @@ void mario::keyReleaseEvent(QKeyEvent *reEvent)
     if (reEvent->key() == Qt::Key_Up) {
         upKey = false;
         UPtimer = 0;
-        velocity = 0;
+        //velocity = 0;
         setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_L.png"));
     }
 }
@@ -68,16 +68,18 @@ void mario::keyReleaseEvent(QKeyEvent *reEvent)
 //因應按鍵按下改變位置
 void mario::checkKeyState()
 {
-    if(rightKey == true){
+    if(rightKey == true&&x()<7000){
+        faceRight = true;
         setPos(x()+2,y());
     }
     if((leftKey == true)&&(x()>0)){
+        faceRight = false;
         setPos(x()-2,y());
     }
     if(upKey){
         UPtimer++;
-        if(UPtimer <= 20){
-            velocity = -53;
+        if(UPtimer <= 50){
+            velocity = -4;
         }
         else{
             upKey = false;
@@ -92,12 +94,13 @@ void mario::gravity(){
     if(!landed){
         double acceleration = 0.08; // 加速度
         Vg += acceleration;
+        qDebug() << y();
     }
 }
 
 void mario::countY(){
     Vc = Vg + velocity;
-    qDebug() <<"Vc:" << Vc << "; Vg" << Vg << "; velocity:" << velocity;
+    //qDebug() <<"Vc:" << Vc << "; Vg" << Vg << "; velocity:" << velocity;
 
     if(y()>=450&&Vc>=0){   //如果y==450且VC>=0則將速度和位置歸零
         landed = true;
@@ -106,7 +109,7 @@ void mario::countY(){
         setPos(x(), 450);
         qDebug() << "s";
     }
-    if(upKey||!landed){ //按下上鍵
+    else if(upKey||!landed){ //按下上鍵
         landed = false;
         setPos(x(), y()+Vc);
         qDebug() << "up";
@@ -130,6 +133,26 @@ void mario::animation()
             setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_run2_L.png"));
         if(Ltimer%100 >= 50)
             setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_run1_L.png"));
+    }
+    if(!landed){
+        if(upKey){
+            if(faceRight)
+                setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_jump1_R.png"));
+            else
+                setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_jump1_L.png"));
+        }
+        else{
+            if(faceRight)
+                setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_jump2_R.png"));
+            else
+                setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_jump2_L.png"));
+        }
+    }
+    else{
+        if(faceRight)
+            setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_R.png"));
+        else
+            setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_L.png"));
     }
 }
 
