@@ -20,6 +20,6 @@ int main(int argc, char *argv[])
     w.show();
     loginwindow l;
     QObject::connect(&l,&loginwindow::startGame,&w,&MainWindow::show);
-    l.show();
+    //l.show();
     return a.exec();
 }

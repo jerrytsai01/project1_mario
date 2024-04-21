@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "mario.h"
-#include "bricks.h"
+#include "floorbricks.h"
 #include <QLabel>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -36,13 +36,13 @@ MainWindow::MainWindow(QWidget *parent)
            }
 
         // 添加地板磚塊
-        QPixmap brickPixmap(":/new/prefix1/image/brick/floor brick.png");
+        QPixmap floorBrickPixmap(":/new/prefix1/image/brick/floor brick.png");
         const int brickWidth = 50;
         const int numBricks = 7000 / brickWidth;
         for (int i = 0; i < numBricks; ++i) {
-            if((i!=30) && (i!=31)){
-                bricks *brickItem = new bricks(brickPixmap, i * brickWidth, 500);
-                scene->addItem(brickItem); // 将砖块添加到场景中
+            if((i!=10) && (i!=11)){
+                floorBricks *floorBrickItem = new floorBricks(floorBrickPixmap, i * brickWidth, 500);
+                scene->addItem(floorBrickItem); // 将砖块添加到场景中
             }
         }
 

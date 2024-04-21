@@ -1,6 +1,6 @@
 #include "mario.h"
 #include "mainwindow.h"
-#include "bricks.h"
+#include "floorbricks.h"
 #include <QKeyEvent>
 #include <QDebug>
 #include <QTimer>
@@ -187,11 +187,16 @@ void mario::colliedWithBrick()
     QList<QGraphicsItem*> collidingItems =scene()-> collidingItems(this, Qt::IntersectsItemBoundingRect);
     for(int i =0;i<collidingItems.size();i++){
         QGraphicsItem *item = collidingItems[i];
-        if(typeid(*item) == typeid(bricks)){
-            qDebug() << "collided brick";
-            if(item->y()-75 <= y()){
+        if(typeid(*item) == typeid(floorBricks)){
+            qDebug() << "collided floor brick";
+            qDebug() << "size: x from" << item->x()-25 << " to " << item->x()+25 << ";y from" << item->y()-50 << " to " << item->y()+50;
+            qDebug() <<"mario x" <<x()<<" y "<<y();
+            if((item->y()-75 <= y()) && (x() < item->x()+25) && (x() > item->x()-25))
                 collidedBottom = true;
-            }
+            if((item->x()-25 >= x()) && (y() > item->y()-49.5) && (y() < item->y()+49.5))
+                collidedRight = true;
+            if((item->x()+25 <= x()) && (y() > item->y()-49.5) && (y() < item->y()+49.5))
+                collidedLeft = true;
 
             /*
             collidedBottom = true;
