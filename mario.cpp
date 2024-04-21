@@ -116,12 +116,12 @@ void mario::gravity(){
 void mario::countY(){
     Vc = Vg + velocity;
     //
-    if((collidedBottom&&Vc>=0)||(collidedTop)){   //如果y==450且VC>=0則將速度和位置歸零
+    if(((collidedBottom)&&(Vc>=0))||(collidedTop)){   //如果y==450且VC>=0則將速度和位置歸零
         collidedBottom = true;
+        velocity = 0;
         Vg = 0;
         Vc = 0;
         qDebug() <<"Vc:" << Vc << "; Vg" << Vg << "; velocity:" << velocity;
-
         qDebug() << "countY:collideBottom:" << collidedBottom <<"; collideTop:" <<collidedTop;
     }
     setPos(x(), y()+Vc);
@@ -188,6 +188,7 @@ void mario::colliedWithBrick()
     for(int i =0;i<collidingItems.size();i++){
         QGraphicsItem *item = collidingItems[i];
         if(typeid(*item) == typeid(bricks)){
+            qDebug() << "collided brick";
             if(item->y()-75 <= y()){
                 collidedBottom = true;
             }
