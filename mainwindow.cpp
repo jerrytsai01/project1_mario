@@ -1,12 +1,13 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "mario.h"
+#include "bricks.h"
 #include <QLabel>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QGraphicsPixmapItem>
 #include <QScrollBar>
-
+#include <QTimer>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -37,35 +38,40 @@ MainWindow::MainWindow(QWidget *parent)
         // 添加地板磚塊
         QPixmap brickPixmap(":/new/prefix1/image/brick/floor brick.png");
         const int brickWidth = 50;
-        //const int brickHeight = 100;
-        const int numBricks = 7000 / brickWidth; // 根據視窗寬度計算需要多少塊磚塊
+        const int numBricks = 7000 / brickWidth;
         for (int i = 0; i < numBricks; ++i) {
-            QGraphicsPixmapItem *brickItem = new QGraphicsPixmapItem(brickPixmap);
-            brickItem->setPos(i * brickWidth, 500); // 設置磚塊位置
-            scene->addItem(brickItem);
+            if((i!=30) && (i!=31)){
+                bricks *brickItem = new bricks(brickPixmap, i * brickWidth, 500);
+                scene->addItem(brickItem); // 将砖块添加到场景中
+            }
         }
-
-
-        //創建馬力歐
-        /*QPixmap mario(":/new/prefix1/image/Mario_small/s_mario_stand_R.png");
-        QGraphicsPixmapItem *mari = new QGraphicsPixmapItem(mario);
-        mari->setPos(0,400);
-        scene->addItem(mari);*/
-        mario * player = new mario();
-            scene->addItem(player);
-
-            player->setFlag(QGraphicsItem::ItemIsFocusable);
-            player->setFocus();
-
 
         // 創建視圖並設置場景
         QGraphicsView *view = new QGraphicsView(scene);
         view->setFixedSize(1400, 600); // 設置視圖大小為1400x600
-        //view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff); // 關閉水平滾動條
+        view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff); // 關閉水平滾動條
         view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff); // 關閉垂直滾動條
         view->horizontalScrollBar()->setValue(0);
+
+        //創建馬力歐
+        mario * player = new mario();
+        scene->addItem(player);
+        player->readview(view);
+
+        player->setFlag(QGraphicsItem::ItemIsFocusable);
+        player->setFocus();
+
         // 將視圖設置為主視窗的中央窗口
-        setCentralWidget(view);
+                setCentralWidget(view);
+                /*// 创建定时器对象
+                QTimer *timer = new QTimer(this);
+                // 连接定时器的 timeout() 信号到 lockview() 槽函数
+                connect(timer, &QTimer::timeout, this, [=]() {
+                    player->lockview(view);
+                });
+                // 设置定时器的间隔时间，单位为毫秒
+                int interval = 1; // 设置为 100 毫秒，即每隔 100 毫秒调用一次 lockview() 函数
+                timer->start(interval);*/
 
 }
 
