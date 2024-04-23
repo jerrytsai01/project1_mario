@@ -13,13 +13,15 @@ SOURCES += \
     loginwindow.cpp \
     main.cpp \
     mainwindow.cpp \
-    mario.cpp
+    mario.cpp \
+    toxicmushroom.cpp
 
 HEADERS += \
     floorbricks.h \
     loginwindow.h \
     mainwindow.h \
-    mario.h
+    mario.h \
+    toxicmushroom.h
 
 FORMS += \
     mainwindow.ui

@@ -103,7 +103,6 @@ void mario::checkKeyState()
 
 //給持續向下速度
 void mario::gravity(){
-
         //collidedBottom = false;
     if(!collidedBottom){
         double acceleration = 0.08; // 加速度
@@ -168,15 +167,6 @@ void mario::animation()
     }
 }
 
-void mario::readview(QGraphicsView *read){
-    view=read;
-}
-void mario::lockview(){
-    if((pos().x()>=700) || (pos().x()<=6300)){
-        view->centerOn(pos().x(),300);
-    }
-}
-
 //if collied with brick, record the direction of collision
 void mario::colliedWithBrick()
 {
@@ -198,34 +188,18 @@ void mario::colliedWithBrick()
             if((item->x()+25 <= x()) && (y() > item->y()-49.5) && (y() < item->y()+49.5))
                 collidedLeft = true;
 
-            /*
-            collidedBottom = true;
-            collidedLeft = true;
-            collidedLeft = true;
-            collidedTop = true;
-
-            //gain the rect of objectrect
-            QRectF itemRect = item->boundingRect();
-            QPointF itemTopLeft = item->mapToScene(itemRect.topLeft());
-            QPointF itemBottomRight = item->mapToScene(itemRect.bottomRight());
-
-            //gain the rect of mario
-            QRectF marioRect = this->boundingRect();
-            QPointF marioTopLeft = this->mapToScene(marioRect.topLeft());
-            QPointF marioBottomRight = this->mapToScene(marioRect.bottomRight());
-
-            //check colliding direction
-
-            collidedTop = marioBottomRight.y() <= itemTopLeft.y();
-            collidedBottom = marioTopLeft.y()-3 >= itemBottomRight.y();
-            collidedLeft = marioBottomRight.x() <= itemTopLeft.x();
-            collidedRight = marioTopLeft.x() >= itemBottomRight.x();
-            qDebug() << marioBottomRight <<"; " << itemTopLeft;
-            */
-
             }
     }
     qDebug() << "collideBottom:" <<collidedBottom << "; collideR:" << collidedRight << "; collideL:" << collidedLeft <<"; CollideTop:" <<collidedTop;
+}
+
+void mario::readview(QGraphicsView *read){
+    view=read;
+}
+void mario::lockview(){
+    if((pos().x()>=700) || (pos().x()<=6300)){
+        view->centerOn(pos().x(),300);
+    }
 }
 
 

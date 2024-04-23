@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "mario.h"
 #include "floorbricks.h"
+#include"toxicmushroom.h"
 #include <QLabel>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -61,6 +62,8 @@ MainWindow::MainWindow(QWidget *parent)
         player->setFlag(QGraphicsItem::ItemIsFocusable);
         player->setFocus();
 
+        toxicmushroom *mushroom = new toxicmushroom();
+        scene->addItem(mushroom);
         // 將視圖設置為主視窗的中央窗口
                 setCentralWidget(view);
                 /*// 创建定时器对象
