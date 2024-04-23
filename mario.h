@@ -12,6 +12,9 @@ public:
     void keyReleaseEvent(QKeyEvent *reEvent);
     mario(QGraphicsPixmapItem *parent=0);
     void readview(QGraphicsView *view);
+    int marioBlood = 3;
+    int score = 0, fireBall = 0, faliure = 0;
+    bool big = false, marioIsDead = false;
 public slots:
     void checkKeyState();
     void gravity();
@@ -19,6 +22,7 @@ public slots:
     void countY();
     void lockview();
     void colliedWithBrick();
+    void marioDead();
 private:
     bool rightKey = false, leftKey = false,
          upKey = false, faceRight = true, reachTop = false;

@@ -41,9 +41,13 @@ MainWindow::MainWindow(QWidget *parent)
         const int brickWidth = 50;
         const int numBricks = 7000 / brickWidth;
         for (int i = 0; i < numBricks; ++i) {
-            if((i!=10) && (i!=11)){
+            if(((i>=11)&&(i<=13)) || ((i>=35)&&(i<=45)) || ((i>=65)&&(i<=105))){
+                continue;
+            }
+            else
+            {
                 floorBricks *floorBrickItem = new floorBricks(floorBrickPixmap, i * brickWidth, 500);
-                scene->addItem(floorBrickItem); // 将砖块添加到场景中
+                scene->addItem(floorBrickItem); // add floor bricks into scene
             }
         }
 
@@ -62,8 +66,11 @@ MainWindow::MainWindow(QWidget *parent)
         player->setFlag(QGraphicsItem::ItemIsFocusable);
         player->setFocus();
 
+        //create toxic mushroom
+/*
         toxicmushroom *mushroom = new toxicmushroom();
         scene->addItem(mushroom);
+*/
         // 將視圖設置為主視窗的中央窗口
                 setCentralWidget(view);
                 /*// 创建定时器对象
