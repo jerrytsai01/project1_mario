@@ -79,10 +79,10 @@ MainWindow::MainWindow(QWidget *parent)
 
         // 定义地图上磚塊的布局，这里只是一个示例，你可以根据实际需要修改
         QVector<QPointF> brickPositions = {
-            QPointF(10*w, 5*h),
-            QPointF(11*w, 5*h),
-            QPointF(12*w, 5*h),
-            QPointF(3*w, 8*h),
+            QPointF(10*w, 7*h),
+            QPointF(11*w, 7*h),
+            QPointF(12*w, 7*h),
+            QPointF(13*w, 7*h),
         };
 
         // 在每个位置上生成磚塊
