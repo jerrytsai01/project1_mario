@@ -40,15 +40,15 @@ MainWindow::MainWindow(QWidget *parent)
 
         // 添加地板磚塊
         QPixmap floorBrickPixmap(":/new/prefix1/image/brick/floor brick.png");
-        const int brickWidth = 50;
-        const int numBricks = 7000 / brickWidth;
+        const int floorbrickWidth = 50;
+        const int numBricks = 7000 / floorbrickWidth;
         for (int i = 0; i < numBricks; ++i) {
             if(((i>=11)&&(i<=12)) || ((i>=35)&&(i<=45)) || ((i>=65)&&(i<=105))){
                 continue;
             }
             else
             {
-                floorBricks *floorBrickItem = new floorBricks(floorBrickPixmap, i * brickWidth, 500);
+                floorBricks *floorBrickItem = new floorBricks(floorBrickPixmap, i * floorbrickWidth, 500);
                 scene->addItem(floorBrickItem); // add floor bricks into scene
             }
         }
@@ -67,29 +67,42 @@ MainWindow::MainWindow(QWidget *parent)
 
         player->setFlag(QGraphicsItem::ItemIsFocusable);
         player->setFocus();
+        mario::hp=3;
+        QLabel *hpLabel = new QLabel("HP: 3",view);
+        hpLabel->setStyleSheet("QLabel { color : red; font-size: 45px; }");
+        hpLabel->move(200,0);
+        mario::hplabel=hpLabel;
 
         //create toxic mushroom
 
         toxicmushroom *mushroom = new toxicmushroom();
         scene->addItem(mushroom);
 
-        // 定义磚塊的宽度和高度
-        const int w = 50;
-        const int h = 50;
+        // brick's height and weight
+        const int brickW = 50;
+        const int brickH = 50;
 
-        // 定义地图上磚塊的布局，这里只是一个示例，你可以根据实际需要修改
+        // the stonebrick's position
         QVector<QPointF> brickPositions = {
-            QPointF(10*w, 7*h),
-            QPointF(11*w, 7*h),
-            QPointF(12*w, 7*h),
-            QPointF(13*w, 7*h),
+            QPointF(10, 7),
+            QPointF(11, 7),
+            QPointF(12, 7),
+            QPointF(13, 7),
+            QPointF(3, 9),
+            QPointF(3, 8),
+            QPointF(4, 9),
+            QPointF(4, 8),
+            QPointF(4, 7),
+
         };
 
-        // 在每个位置上生成磚塊
+        // generate stonebricks
         for (const QPointF& position : brickPositions) {
-            stonebricks *brick = new stonebricks(position.x(), position.y());
+            stonebricks *brick = new stonebricks();
             brick->setPixmap(QPixmap(":/new/prefix1/image/brick/stone brick.png"));
-            brick->setPos(position);
+            int x = position.x()*brickW;
+            int y = position.y()*brickH;
+            brick->setPos(x,y);
             scene->addItem(brick);
         }
 

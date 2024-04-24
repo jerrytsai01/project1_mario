@@ -12,6 +12,8 @@
 #include <QList>
 #include <typeinfo>
 
+int mario::hp = 3;
+QLabel *mario::hplabel=nullptr;
 mario::mario(QGraphicsPixmapItem *parent):QGraphicsPixmapItem (parent)
 {
     setFlag(QGraphicsItem::ItemIsMovable);
@@ -74,19 +76,28 @@ void mario::keyReleaseEvent(QKeyEvent *reEvent)
     if (reEvent->key() == Qt::Key_Right) {
         rightKey = false;
         faceRight = true;
-        setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_R.png"));
+        if(small)
+            setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_R.png"));
+        else
+            setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_R_stand.png"));
     }
     if (reEvent->key() == Qt::Key_Left) {
         leftKey = false;
         faceRight = false;
         Ltimer = 0;
-        setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_L.png"));
+        if(small)
+            setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_L.png"));
+        else
+            setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_L_stand.png"));
     }
     if (reEvent->key() == Qt::Key_Up) {
         upKey = false;
         UPtimer = 0;
         //velocity = 0;
-        setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_L.png"));
+        if(small)
+            setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_L.png"));
+        else
+            setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_L.png"));
     }
 }
 
@@ -124,7 +135,11 @@ void mario::checkKeyState()
 void mario::gravity(){
         //collidedBottom = false;
     if(!collidedBottom){
-        double acceleration = 0.12; // 加速度
+        double acceleration;
+        if(small)
+            acceleration = 0.15; // 加速度
+        else
+            acceleration = 0.09;
         Vg += acceleration;
         //qDebug() << y();
     }
@@ -142,11 +157,13 @@ void mario::countY(){
         velocity = 0;
         Vg = 0;
         Vc = 0;
-
+        qDebug() << "from " << BottomY << " to " << TopY << " high " << BottomY - TopY;
         //qDebug() <<"Vc:" << Vc << "; Vg" << Vg << "; velocity:" << velocity;
         //qDebug() << "countY:collideBottom:" << collidedBottom <<"; collideTop:" <<collidedTop;
     }
     setPos(x(), y()+Vc);
+    if(y() < TopY)
+        TopY = y();
     //qDebug() << "Y = " << y()-Vc << "+" << Vc;
 }
 
@@ -155,38 +172,96 @@ void mario::animation()
 {
     if(rightKey&&collidedBottom) {
         Rtimer++; // 增加計數器
-        if(Rtimer % 50 < 25) { // 控制切換速度
-            setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_run2_R.png"));
-        } else {
-            setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_run1_R.png"));
+        if(small){
+            if(Rtimer % 50 < 25) { // 控制切換速度
+                setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_run2_R.png"));
+            } else {
+                setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_run1_R.png"));
+            }
+        }
+        else{
+            if(Rtimer % 50 < 25) { // 控制切換速度
+                setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_R_run2.png"));
+            } else {
+                setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_R_run1.png"));
+            }
         }
     }
     else if(leftKey&&collidedBottom){
         Ltimer++;
-        if(Ltimer % 50 < 25)
-            setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_run2_L.png"));
-        else
-            setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_run1_L.png"));
+        if(small){
+            if(Ltimer % 50 < 25)
+                setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_run2_L.png"));
+            else
+                setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_run1_L.png"));
+        }
+        else{
+            if(Ltimer % 50 < 25)
+                setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_L_run2.png"));
+            else
+                setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_L_run1.png"));
+        }
     }
     else if(!collidedBottom){
         if(upKey){
-            if(faceRight)
-                setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_jump1_R.png"));
-            else
-                setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_jump1_L.png"));
+            UPtimer++;
+            if(small){//small mario up
+                if(faceRight)
+                    setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_jump1_R.png"));
+                else
+                    setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_jump1_L.png"));
+            }
+            else{//big mario up
+                if(faceRight){
+                    if(UPtimer%100 < 40)
+                        setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_R_jump2.png"));
+                    else
+                        setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_R_jump1.png"));
+                }
+                else{
+                    if(UPtimer%50 < 25)
+                        setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_L_jump1.png"));
+                    else
+                        setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_L_jump2.png"));
+                }
+            }
         }
         else{
-            if(faceRight)
-                setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_jump2_R.png"));
-            else
-                setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_jump2_L.png"));
+            if(small){//small mario downward
+                if(faceRight)
+                    setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_jump2_R.png"));
+                else
+                    setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_jump2_L.png"));
+            }
+            else{//big mario downward
+                if(faceRight){
+                    if(UPtimer%100 < 60)
+                        setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_R_jump4.png"));
+                    else
+                        setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_R_jump3.png"));
+                }
+                else{
+                    if(UPtimer%50 < 25)
+                        setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_L_jump3.png"));
+                    else
+                        setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_L_jump4.png"));
+                }
+            }
         }
     }
     else{
-        if(faceRight)
-            setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_R.png"));
-        else
-            setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_L.png"));
+        if(small){
+            if(faceRight)
+                setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_R.png"));
+            else
+                setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_L.png"));
+        }
+        else{
+            if(faceRight)
+                setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_R_stand.png"));
+            else
+                setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_L_stand.png"));
+        }
     }
 }
 
@@ -210,44 +285,88 @@ void mario::colliedWithFloorBrick()
             //qDebug() << "collided floor brick";
             //qDebug() << "size: x from" << item->x()-25 << " to " << item->x()+25 << ";y from" << item->y()-50 << " to " << item->y()+50;
             //qDebug() <<"mario x" <<x()<<" y "<<y();
-            if((item->y() > y()) && (x() < item->x()+26) && (x() > item->x()-26)){
-                if(!upKey&&velocity!=0){
-                velocity = 0;
-                Vg = 0;
-                Vc = 0;
+            if(small){
+                if((item->y() > y()) && (x() < item->x()+26) && (x() > item->x()-26)){
+                    if(!upKey&&velocity!=0){
+                        velocity = 0;
+                        Vg = 0;
+                        Vc = 0;
+                    }
+                    BottomY = y();
+                    collidedBottom = true;
                 }
-                collidedBottom = true;
+                else if((item->x() >= x()) && (y() > item->y()-48) && (y() < item->y()+50)){
+                    setPos(x(),y()-0.1);
+                    //qDebug() << "111111111111111";
+                    collidedRight = true;
+                }
+                else if((item->x() <= x()) && (y() > item->y()-48) && (y() < item->y()+50)){
+                    setPos(x(),y()-0.1);
+                    collidedLeft = true;
+                }
             }
-            else if((item->x()-25 >= x()) && (y() > item->y()-48) && (y() < item->y()+50)){
-                setPos(x(),y()-0.1);
-                //qDebug() << "111111111111111";
-                collidedRight = true;
-            }
-            else if((item->x()+25 <= x()) && (y() > item->y()-48) && (y() < item->y()+50)){
-                setPos(x(),y()-0.1);
-                collidedLeft = true;
+            else{
+                if((item->y() > y()) && (x() < item->x()+28) && (x() > item->x()-28)){
+                    if(!upKey&&velocity!=0){
+                        velocity = 0;
+                        Vg = 0;
+                        Vc = 0;
+                    }
+                    BottomY = y();
+                    collidedBottom = true;
+                }
+                else if((item->x() >= x()) && (y() > item->y()-68) && (y() < item->y()+68)){
+                    setPos(x(),y()-0.1);
+                    //qDebug() << "111111111111111";
+                    collidedRight = true;
+                }
+                else if((item->x() <= x()) && (y() > item->y()-68) && (y() < item->y()+68)){
+                    setPos(x(),y()-0.1);
+                    collidedLeft = true;
+                }
             }
         }
         if(typeid(*item) == typeid(stonebricks)){
             //qDebug() << "collided stone brick";
             //qDebug() << "size: x from" << item->x()-25 << " to " << item->x()+25 << ";y from" << item->y()-25 << " to " << item->y()+25;
             //qDebug() <<"mario x" <<x()<<" y "<<y();
-            if((item->y() > y()) && (x() < item->x()+40) && (x() > item->x()-40)){
-                if(!upKey&&velocity!=0){
-                    velocity = 0;
-                    Vg = 0;
-                    Vc = 0;
+            if(small){
+                if((item->y() > y()) && (x() < item->x()+40) && (x() > item->x()-40)){
+                    if(!upKey&&velocity!=0){
+                        velocity = 0;
+                        Vg = 0;
+                        Vc = 0;
+                    }
+                    collidedBottom = true;
                 }
-                collidedBottom = true;
+                if((item->y() < y()) && (x() < item->x()+40) && (x() > item->x()-40)){
+                    collidedTop = true;
+                    upKey = false;
+                }
+                if((item->x() > x()) && (y() > item->y()-25) && (y() < item->y()+25))
+                    collidedRight = true;
+                if((item->x() < x()) && (y() > item->y()-25) && (y() < item->y()+25))
+                    collidedLeft = true;
             }
-            if((item->y() < y()) && (x() < item->x()+40) && (x() > item->x()-40)){
-                collidedTop = true;
+            else{
+                if((item->y() > y()) && (x() < item->x()+40) && (x() > item->x()-40)){
+                    if(!upKey&&velocity!=0){
+                        velocity = 0;
+                        Vg = 0;
+                        Vc = 0;
+                    }
+                    collidedBottom = true;
+                }
+                if((item->y() < y()) && (x() < item->x()+40) && (x() > item->x()-40)){
+                    collidedTop = true;
+                    upKey = false;
+                }
+                if((item->x() > x()) && (y() > item->y()-45) && (y() < item->y()+45))
+                    collidedRight = true;
+                if((item->x() < x()) && (y() > item->y()-45) && (y() < item->y()+45))
+                    collidedLeft = true;
             }
-            if((item->x() > x()) && (y() > item->y()-25) && (y() < item->y()+25))
-                collidedRight = true;
-            if((item->x() < x()) && (y() > item->y()-25) && (y() < item->y()+25))
-                collidedLeft = true;
-            }
+        }
     }
     //qDebug() << "collideBottom:" <<collidedBottom << "; collideR:" << collidedRight << "; collideL:" << collidedLeft <<"; CollideTop:" <<collidedTop;
 }
@@ -271,7 +390,7 @@ void mario::colliedWithToxicmushroom(){
                 invincible = true;
         }
     }
-    qDebug() << "decreasedHP = " << decreasedHP ;
+    //qDebug() << "decreasedHP = " << decreasedHP ;
 }
 
 //if blood == 0, respawn to begin
@@ -279,7 +398,7 @@ void mario::marioDead()
 {
     if((hp <= 0)||(y() >= 650)){
         //qDebug() << "FAILURE!!!";
-
+        small = true;
         setPos(0, 400);
         hp = 3;
         faliure++;
@@ -293,18 +412,19 @@ void mario::HP(){
     }
     if (decreasedHP)
         hp--;
-    qDebug() << "HP = " << hp;
+    //qDebug() << "HP = " << hp;
+    hplabel->setText("HP: " + QString::number(hp));
 }
 
 void mario::InvincibleForm(){
     if(invincible) {
         invincibleTimer++;
-        qDebug() << "Mario is in the invincible form.";
+        //qDebug() << "Mario is in the invincible form.";
     }
     if(invincibleTimer >= 400){
         invincible = false;
         invincibleTimer = 0;
-        qDebug() << "Mario return the normal form.";
+        //qDebug() << "Mario return the normal form.";
     }
 }
 
