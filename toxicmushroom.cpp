@@ -7,15 +7,17 @@
 #include <QTimer>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsView>
+#include <QGraphicsItem>
 #include <QList>
 #include <typeinfo>
 
 toxicmushroom::toxicmushroom(QGraphicsPixmapItem *parent):QGraphicsPixmapItem (parent)
 {
+    setFlag(QGraphicsItem::ItemIsMovable);
+    setFlag(QGraphicsItem::ItemIsSelectable);
 
     setPos(1000,400);
     setPixmap(QPixmap(":/new/prefix1/image/toxic mushroom1.png"));
-
 
     QTimer*timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(toxicmushroom_move()));
@@ -23,71 +25,98 @@ toxicmushroom::toxicmushroom(QGraphicsPixmapItem *parent):QGraphicsPixmapItem (p
     connect(timer, SIGNAL(timeout()), this, SLOT(countY()));
     connect(timer, SIGNAL(timeout()), this, SLOT(gravity()));
     connect(timer, SIGNAL(timeout()), this, SLOT(colliedWithBrick()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(colliedWithMario()));
     timer->start(10);
-
 }
 
 void toxicmushroom::toxicmushroom_move(){
     if(faceLeft){
-        if(x()==0){
-            faceLeft = false;
-            setPixmap(QPixmap(":/new/prefix1/image/toxic mushroom2.png"));
-        }
-        else setPos(x()-2,y());
+        if(x()==700) faceLeft = false;
+        else setPos(x()-1,y());
     }
     else if(!faceLeft){
-        if(x()==7000){
-            faceLeft = true;
-            setPixmap(QPixmap(":/new/prefix1/image/toxic mushroom1.png"));
-        }
-        else setPos(x()+2,y());
+        if(x()==1400) faceLeft = true;
+        else setPos(x()+1,y());
     }
 }
 
 void toxicmushroom::gravity(){
-
-         //collidedBottom = false;
-     if(!collidedBottom){
+        //collidedBottom = false;
+    if(!collidedBottom){
          double acceleration = 0.08; // 加速度
          velocity += acceleration;
          //qDebug() << y();
      }
 }
 
+void toxicmushroom::animation(){
+    timer++;
+    if(timer % 30 < 15) setPixmap(QPixmap(":/new/prefix1/image/toxic mushroom2.png"));
+    else setPixmap(QPixmap(":/new/prefix1/image/toxic mushroom1.png"));
+}
+
 void toxicmushroom::countY(){
     if(((collidedBottom)&&(velocity>=0))||(collidedTop)){   //如果y==450且VC>=0則將速度和位置歸零
         collidedBottom = true;
         velocity = 0;
-        qDebug() << "velocity:" << velocity;
-        qDebug() << "countY:collideBottom:" << collidedBottom << "; collideTop:" <<collidedTop;
+        //qDebug() << "velocity:" << velocity;
+        //qDebug() << "countY:collideBottom:" << collidedBottom << "; collideTop:" <<collidedTop;
     }
     setPos(x(), y()+ velocity);
-    qDebug() << "Y = " << y()-velocity << "+" << velocity;
+    //qDebug() << "Y = " << y()-velocity << "+" << velocity;
 }
 
+void toxicmushroom::colliedWithMario(){
+    QList<QGraphicsItem*> collidingItems =scene()-> collidingItems(this, Qt::IntersectsItemBoundingRect);
+    for(int i =0;i<collidingItems.size();i++){
+        QGraphicsItem *item = collidingItems[i];
+        if(typeid(*item) == typeid(mario)){
+            //qDebug() << "collided mario";
+            //qDebug() << "size: x from" << item->x()-25 << " to " << item->x()+25 << ";y from" << item->y()-50 << " to " << item->y()+50;
+            //qDebug() << "toxicmushroom x" <<x()<<" y "<<y();
+            if((item->y() < y()) && (x() < item->x()+25) && (x() > item->x()-25)){
+                live = false;
+                setPixmap(QPixmap(":/new/prefix1/image/toxic mushroom3.png"));
+                qDebug() << "Toxicmushroom is killed by Mario";
+            }
+        }
+    }
+}
 
-void toxicmushroom::colliedWithBrick()
-{
+void toxicmushroom::colliedWithBrick(){
     collidedBottom = false;
     collidedLeft = false;
-    collidedLeft = false;
+    collidedRight = false;
     collidedTop = false;
     QList<QGraphicsItem*> collidingItems =scene()-> collidingItems(this, Qt::IntersectsItemBoundingRect);
     for(int i =0;i<collidingItems.size();i++){
         QGraphicsItem *item = collidingItems[i];
         if(typeid(*item) == typeid(floorBricks)){
-            qDebug() << "collided floor brick";
-            qDebug() << "size: x from" << item->x()-25 << " to " << item->x()+25 << ";y from" << item->y()-50 << " to " << item->y()+50;
-            qDebug() << "toxicmushroom x" <<x()<<" y "<<y();
+            //qDebug() << "collided floor brick";
+            //qDebug() << "size: x from" << item->x()-25 << " to " << item->x()+25 << ";y from" << item->y()-50 << " to " << item->y()+50;
+            //qDebug() << "toxicmushroom x" <<x()<<" y "<<y();
             if((item->y()+75 >= y()) && (x() < item->x()+25) && (x() > item->x()-25))
                 collidedTop = true;
             if((item->y()-75 <= y()) && (x() < item->x()+25) && (x() > item->x()-25))
                 collidedBottom = true;
-            if((item->x()-25 >= x()) && (y() > item->y()-49) && (y() < item->y()+49))
+            if((item->x()-25 <= x()) && (y() > item->y()-48) && (y() < item->y()+48))
                 collidedRight = true;
-            if((item->x()+25 <= x()) && (y() > item->y()-49) && (y() < item->y()+49))
+            if((item->x()+25 >= x()) && (y() > item->y()-48) && (y() < item->y()+48))
                 collidedLeft = true;
 
             }
     }
 }
+
+
+
+//確認有無存活
+void toxicmushroom::livecheck(){
+    if(!live){
+        scene()->removeItem(this);
+        delete this;
+        qDebug() << "toxicmushroom deleted" ;
+    }
+}
+
+

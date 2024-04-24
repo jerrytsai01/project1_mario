@@ -1,18 +1,21 @@
 #include "mario.h"
 #include "mainwindow.h"
 #include "floorbricks.h"
+#include "stonebricks.h"
 #include "toxicmushroom.h"
 #include <QKeyEvent>
 #include <QDebug>
 #include <QTimer>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsView>
+#include <QGraphicsItem>
 #include <QList>
 #include <typeinfo>
 
 mario::mario(QGraphicsPixmapItem *parent):QGraphicsPixmapItem (parent)
 {
-
+    setFlag(QGraphicsItem::ItemIsMovable);
+    setFlag(QGraphicsItem::ItemIsSelectable);
     //初始位置跟圖片
     setPos(0,400);
     setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_R.png"));
@@ -21,16 +24,20 @@ mario::mario(QGraphicsPixmapItem *parent):QGraphicsPixmapItem (parent)
     QTimer*timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(checkKeyState()));
     connect(timer, SIGNAL(timeout()), this, SLOT(animation()));
-    connect(timer, SIGNAL(timeout()), this, SLOT(countY()));
-    connect(timer, SIGNAL(timeout()), this, SLOT(gravity()));
+       connect(timer, SIGNAL(timeout()), this, SLOT(gravity()));
     connect(timer, SIGNAL(timeout()), this, SLOT(lockview()));
     //connect(timer, SIGNAL(timeout()), this, SLOT(colliedWithBrick()));
     connect(timer, SIGNAL(timeout()), this, SLOT(marioDead()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(colliedWithToxicmushroom()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(HP()));
     timer->start(10);
 
     QTimer *Timer2 = new QTimer(this);
-    connect(Timer2, SIGNAL(timeout()), this, SLOT(colliedWithBrick()));
+    connect(Timer2, SIGNAL(timeout()), this, SLOT(colliedWithFloorBrick()));
+    connect(Timer2, SIGNAL(timeout()), this, SLOT(countY()));
+    connect(Timer2, SIGNAL(timeout()), this, SLOT(InvincibleForm()));
     Timer2->start(5);
+
 }
 void mario::readview(QGraphicsView *read){
     view=read;
@@ -117,7 +124,7 @@ void mario::checkKeyState()
 void mario::gravity(){
         //collidedBottom = false;
     if(!collidedBottom){
-        double acceleration = 0.08; // 加速度
+        double acceleration = 0.12; // 加速度
         Vg += acceleration;
         //qDebug() << y();
     }
@@ -129,17 +136,18 @@ void mario::countY(){
     if(Vc >= 4)
         Vc = 4;
     //
-    if(((collidedBottom)&&(Vc>=0))||(collidedTop)){   //如果y==450且VC>=0則將速度和位置歸零
+
+    if(((collidedBottom)&&(Vc>=0))||((collidedTop)&&(Vc<0))){   //如果y==450且VC>=0則將速度和位置歸零
         collidedBottom = true;
         velocity = 0;
         Vg = 0;
         Vc = 0;
 
-        qDebug() <<"Vc:" << Vc << "; Vg" << Vg << "; velocity:" << velocity;
+        //qDebug() <<"Vc:" << Vc << "; Vg" << Vg << "; velocity:" << velocity;
         //qDebug() << "countY:collideBottom:" << collidedBottom <<"; collideTop:" <<collidedTop;
     }
     setPos(x(), y()+Vc);
-    qDebug() << "Y = " << y()-Vc << "+" << Vc;
+    //qDebug() << "Y = " << y()-Vc << "+" << Vc;
 }
 
 //change the skin of mario
@@ -147,7 +155,7 @@ void mario::animation()
 {
     if(rightKey&&collidedBottom) {
         Rtimer++; // 增加計數器
-        if(Rtimer % 100 < 50) { // 控制切換速度
+        if(Rtimer % 50 < 25) { // 控制切換速度
             setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_run2_R.png"));
         } else {
             setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_run1_R.png"));
@@ -155,9 +163,9 @@ void mario::animation()
     }
     else if(leftKey&&collidedBottom){
         Ltimer++;
-        if(Ltimer%100 < 50)
+        if(Ltimer % 50 < 25)
             setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_run2_L.png"));
-        if(Ltimer%100 >= 50)
+        else
             setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_run1_L.png"));
     }
     else if(!collidedBottom){
@@ -183,7 +191,7 @@ void mario::animation()
 }
 
 //if collied with brick, record the direction of collision
-void mario::colliedWithBrick()
+void mario::colliedWithFloorBrick()
 {
     collidedBottom = false;
     collidedRight = false;
@@ -194,30 +202,109 @@ void mario::colliedWithBrick()
         QGraphicsItem *item = collidingItems[i];
         //if collided with block type
         if(typeid(*item) == typeid(floorBricks)){
+            //qDebug() << "Collided with floor brick";
+        } else if(typeid(*item) == typeid(stonebricks)){
+            //qDebug() << "Collided with stone brick";
+        }
+        if(typeid(*item) == typeid(floorBricks)){
             //qDebug() << "collided floor brick";
             //qDebug() << "size: x from" << item->x()-25 << " to " << item->x()+25 << ";y from" << item->y()-50 << " to " << item->y()+50;
             //qDebug() <<"mario x" <<x()<<" y "<<y();
-            if((item->y()-75 <= y()) && (x() < item->x()+26) && (x() > item->x()-26))
+            if((item->y() > y()) && (x() < item->x()+26) && (x() > item->x()-26)){
+                if(!upKey&&velocity!=0){
+                velocity = 0;
+                Vg = 0;
+                Vc = 0;
+                }
                 collidedBottom = true;
-            else if((item->x()-25 >= x()) && (y() > item->y()-48) && (y() < item->y()+48))
+            }
+            else if((item->x()-25 >= x()) && (y() > item->y()-48) && (y() < item->y()+50)){
+                setPos(x(),y()-0.1);
+                //qDebug() << "111111111111111";
                 collidedRight = true;
-            else if((item->x()+25 <= x()) && (y() > item->y()-48) && (y() < item->y()+48))
+            }
+            else if((item->x()+25 <= x()) && (y() > item->y()-48) && (y() < item->y()+50)){
+                setPos(x(),y()-0.1);
                 collidedLeft = true;
-
+            }
+        }
+        if(typeid(*item) == typeid(stonebricks)){
+            //qDebug() << "collided stone brick";
+            //qDebug() << "size: x from" << item->x()-25 << " to " << item->x()+25 << ";y from" << item->y()-25 << " to " << item->y()+25;
+            //qDebug() <<"mario x" <<x()<<" y "<<y();
+            if((item->y() > y()) && (x() < item->x()+40) && (x() > item->x()-40)){
+                if(!upKey&&velocity!=0){
+                    velocity = 0;
+                    Vg = 0;
+                    Vc = 0;
+                }
+                collidedBottom = true;
+            }
+            if((item->y() < y()) && (x() < item->x()+40) && (x() > item->x()-40)){
+                collidedTop = true;
+            }
+            if((item->x() > x()) && (y() > item->y()-25) && (y() < item->y()+25))
+                collidedRight = true;
+            if((item->x() < x()) && (y() > item->y()-25) && (y() < item->y()+25))
+                collidedLeft = true;
             }
     }
     //qDebug() << "collideBottom:" <<collidedBottom << "; collideR:" << collidedRight << "; collideL:" << collidedLeft <<"; CollideTop:" <<collidedTop;
 }
 
+void mario::colliedWithToxicmushroom(){
+    decreasedHP = false;
+    QList<QGraphicsItem*> collidingItems =scene()-> collidingItems(this, Qt::IntersectsItemBoundingRect);
+    for(int i =0;i<collidingItems.size();i++){
+        QGraphicsItem *item = collidingItems[i];
+        if((typeid(*item) == typeid(toxicmushroom)) && !invincible){
+            qDebug() << "collided toxicmushroom";
+            qDebug() << "size: x from" << item->x()-25 << " to " << item->x()+25 << ";y from" << item->y()-50 << " to " << item->y()+50;
+            qDebug() <<"mario x" <<x()<<" y "<<y();
+            if((item->y() > y()) && (x() < item->x()+25) && (x() > item->x()-25))
+                decreasedHP = true;
+            else if((item->x() < x()) && (y() > item->y()-48) && (y() < item->y()+48))
+                decreasedHP = true;
+            else if((item->x() > x()) && (y() > item->y()-48) && (y() < item->y()+48))
+                decreasedHP = true;
+            if(decreasedHP)
+                invincible = true;
+        }
+    }
+    qDebug() << "decreasedHP = " << decreasedHP ;
+}
+
 //if blood == 0, respawn to begin
 void mario::marioDead()
 {
-    if((marioBlood <= 0)||(y() >= 650)){
-        qDebug() << "FAILURE!!!";
+    if((hp <= 0)||(y() >= 650)){
+        //qDebug() << "FAILURE!!!";
 
         setPos(0, 400);
-        marioBlood = 3;
+        hp = 3;
         faliure++;
+    }
+}
+
+void mario::HP(){
+    if(increasedHP){
+        hp++;
+        increasedHP = false;
+    }
+    if (decreasedHP)
+        hp--;
+    qDebug() << "HP = " << hp;
+}
+
+void mario::InvincibleForm(){
+    if(invincible) {
+        invincibleTimer++;
+        qDebug() << "Mario is in the invincible form.";
+    }
+    if(invincibleTimer >= 400){
+        invincible = false;
+        invincibleTimer = 0;
+        qDebug() << "Mario return the normal form.";
     }
 }
 

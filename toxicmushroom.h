@@ -11,14 +11,19 @@ public :
     toxicmushroom(QGraphicsPixmapItem *parent=0);
     void readview(QGraphicsView *view);
 public slots:
+    void livecheck();
     void toxicmushroom_move();
     void gravity();
+    void animation();
     void countY();
     void colliedWithBrick();
+    void colliedWithMario();
 private :
     bool collidedTop = false, collidedBottom = true ,collidedLeft = false, collidedRight = false;
     bool faceLeft = true;
     double velocity = 0;
+    int timer = 0;
+    bool live = true;
     QGraphicsView *view;
 };
 

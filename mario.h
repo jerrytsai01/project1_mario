@@ -12,7 +12,7 @@ public:
     void keyReleaseEvent(QKeyEvent *reEvent);
     mario(QGraphicsPixmapItem *parent=0);
     void readview(QGraphicsView *view);
-    int marioBlood = 3;
+    int hp = 3;
     int score = 0, fireBall = 0, faliure = 0;
     bool big = false, marioIsDead = false;
 public slots:
@@ -21,7 +21,11 @@ public slots:
     void animation();
     void countY();
     void lockview();
-    void colliedWithBrick();
+    void colliedWithFloorBrick();
+    //void colliedWithOtherBrick();
+    void colliedWithToxicmushroom();
+    void HP();
+    void InvincibleForm();
     void marioDead();
 private:
     bool rightKey = false, leftKey = false,
@@ -29,6 +33,9 @@ private:
     bool collidedTop = false, collidedBottom = true ,collidedLeft = false, collidedRight = false;
     int Rtimer = 0, Ltimer = 0, UPtimer = 0;
     double velocity = 0, Vc = 0, Vg = 0;
+    bool increasedHP = false, decreasedHP = false;
+    bool invincible = false;
+    int invincibleTimer = 0;
     QGraphicsView *view;
 };
 

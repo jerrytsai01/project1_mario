@@ -2,7 +2,9 @@
 #include "ui_mainwindow.h"
 #include "mario.h"
 #include "floorbricks.h"
-#include"toxicmushroom.h"
+#include "stonebricks.h"
+#include "toxicmushroom.h"
+
 #include <QLabel>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -41,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent)
         const int brickWidth = 50;
         const int numBricks = 7000 / brickWidth;
         for (int i = 0; i < numBricks; ++i) {
-            if(((i>=11)&&(i<=13)) || ((i>=35)&&(i<=45)) || ((i>=65)&&(i<=105))){
+            if(((i>=11)&&(i<=12)) || ((i>=35)&&(i<=45)) || ((i>=65)&&(i<=105))){
                 continue;
             }
             else
@@ -67,10 +69,30 @@ MainWindow::MainWindow(QWidget *parent)
         player->setFocus();
 
         //create toxic mushroom
-/*
+
         toxicmushroom *mushroom = new toxicmushroom();
         scene->addItem(mushroom);
-*/
+
+        // 定义磚塊的宽度和高度
+        const int w = 50;
+        const int h = 50;
+
+        // 定义地图上磚塊的布局，这里只是一个示例，你可以根据实际需要修改
+        QVector<QPointF> brickPositions = {
+            QPointF(10*w, 5*h),
+            QPointF(11*w, 5*h),
+            QPointF(12*w, 5*h),
+            QPointF(3*w, 8*h),
+        };
+
+        // 在每个位置上生成磚塊
+        for (const QPointF& position : brickPositions) {
+            stonebricks *brick = new stonebricks(position.x(), position.y());
+            brick->setPixmap(QPixmap(":/new/prefix1/image/brick/stone brick.png"));
+            brick->setPos(position);
+            scene->addItem(brick);
+        }
+
         // 將視圖設置為主視窗的中央窗口
                 setCentralWidget(view);
                 /*// 创建定时器对象
