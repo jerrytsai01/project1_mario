@@ -19,7 +19,8 @@ SOURCES += \
     normalbricks.cpp \
     stonebricks.cpp \
     toxicmushroom.cpp \
-    waterpipe.cpp
+    waterpipe.cpp \
+    coin.cpp
 
 HEADERS += \
     boxbricks.h \
@@ -31,7 +32,8 @@ HEADERS += \
     normalbricks.h \
     stonebricks.h \
     toxicmushroom.h \
-    waterpipe.h
+    waterpipe.h \
+    coin.h
 
 FORMS += \
     mainwindow.ui

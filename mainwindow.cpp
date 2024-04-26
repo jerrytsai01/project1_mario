@@ -4,13 +4,14 @@
 #include "floorbricks.h"
 #include "stonebricks.h"
 #include "toxicmushroom.h"
-
+#include "coin.h"
 #include <QLabel>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QGraphicsPixmapItem>
 #include <QScrollBar>
 #include <QTimer>
+#include<vector>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -78,33 +79,34 @@ MainWindow::MainWindow(QWidget *parent)
         toxicmushroom *mushroom = new toxicmushroom();
         scene->addItem(mushroom);
 
+        //score and coin
+            Coin::score = 0;
+            QLabel *scoreLabel = new QLabel("Score: 0", view);
+            scoreLabel->setStyleSheet("QLabel { color : red; font-size: 45px; }");
+            scoreLabel->move(0,0);
+            Coin::scorelabel = scoreLabel;
+            for(int i=1;i<10;i++){
+                Coin *coin = new Coin(200*i,400);
+                scene->addItem(coin);
+           }
+
         // brick's height and weight
-        const int brickW = 50;
-        const int brickH = 50;
+        const int w= 50;
+        const int h = 50;
 
-        // the stonebrick's position
-        QVector<QPointF> brickPositions = {
-            QPointF(10, 7),
-            QPointF(11, 7),
-            QPointF(12, 7),
-            QPointF(13, 7),
-            QPointF(3, 9),
-            QPointF(3, 8),
-            QPointF(4, 9),
-            QPointF(4, 8),
-            QPointF(4, 7),
 
-        };
+        //stone建構
+                std::vector<std::vector<int>> stonebrickpos={
+                    {10*w,6*h},{11*w,6*h}  //stone position
+                };
 
-        // generate stonebricks
-        for (const QPointF& position : brickPositions) {
-            stonebricks *brick = new stonebricks();
-            brick->setPixmap(QPixmap(":/new/prefix1/image/brick/stone brick.png"));
-            int x = position.x()*brickW;
-            int y = position.y()*brickH;
-            brick->setPos(x,y);
-            scene->addItem(brick);
-        }
+                for (size_t i = 0; i < stonebrickpos.size(); i ++) {
+                        int x = stonebrickpos[i][0];
+                        int y = stonebrickpos[i][1];
+                        stonebricks *brick = new stonebricks(x, y);
+                        scene->addItem(brick);
+                    }
+
 
         // 將視圖設置為主視窗的中央窗口
                 setCentralWidget(view);

@@ -8,7 +8,7 @@
 class stonebricks: public QObject, public QGraphicsPixmapItem{
     Q_OBJECT
 public:
-    stonebricks(QGraphicsPixmapItem *parent=0);
+    stonebricks(int x,int y,QGraphicsPixmapItem *parent=0);
 };
 
 #endif // STONEBRICKS_H
