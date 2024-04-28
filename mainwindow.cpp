@@ -3,6 +3,9 @@
 #include "mario.h"
 #include "floorbricks.h"
 #include "stonebricks.h"
+#include "brokenbricks.h"
+#include "boxbricks.h"
+#include "normalbricks.h"
 #include "toxicmushroom.h"
 #include "coin.h"
 #include <QLabel>
@@ -96,16 +99,26 @@ MainWindow::MainWindow(QWidget *parent)
 
 
         //stone建構
-                std::vector<std::vector<int>> stonebrickpos={
-                    {10*w,6*h},{11*w,6*h}  //stone position
-                };
+        std::vector<std::vector<int>> stonebrickpos={
+            {10*w,6*h},{11*w,6*h}  //stone position
+        };
+        for (size_t i = 0; i < stonebrickpos.size(); i ++) {
+            int x = stonebrickpos[i][0];
+            int y = stonebrickpos[i][1];
+            stonebricks *brick = new stonebricks(x, y);
+            scene->addItem(brick);
+        }
 
-                for (size_t i = 0; i < stonebrickpos.size(); i ++) {
-                        int x = stonebrickpos[i][0];
-                        int y = stonebrickpos[i][1];
-                        stonebricks *brick = new stonebricks(x, y);
-                        scene->addItem(brick);
-                    }
+        //brokennrick
+        std::vector<std::vector<int>> brokenbrickpos={
+            {9*w,7*h},{8*w,7*h},{9*w,6*h},{8*w,6*h}  //stone position
+        };
+        for (size_t i = 0; i < brokenbrickpos.size(); i ++) {
+            int x = brokenbrickpos[i][0];
+            int y = brokenbrickpos[i][1];
+            brokenbricks *brokenbrick = new brokenbricks(x, y);
+            scene->addItem(brokenbrick);
+        }
 
 
         // 將視圖設置為主視窗的中央窗口

@@ -2,9 +2,12 @@
 #include "mainwindow.h"
 #include "floorbricks.h"
 #include "stonebricks.h"
+#include "brokenbricks.h"
+#include "normalbricks.h"
+#include "boxbricks.h"
 #include "toxicmushroom.h"
 #include <QKeyEvent>
-#include <QDebug>
+//#include <QDebug>
 #include <QTimer>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsView>
@@ -157,7 +160,7 @@ void mario::countY(){
         velocity = 0;
         Vg = 0;
         Vc = 0;
-        qDebug() << "from " << BottomY << " to " << TopY << " high " << BottomY - TopY;
+        //qDebug() << "from " << BottomY << " to " << TopY << " high " << BottomY - TopY;
         //qDebug() <<"Vc:" << Vc << "; Vg" << Vg << "; velocity:" << velocity;
         //qDebug() << "countY:collideBottom:" << collidedBottom <<"; collideTop:" <<collidedTop;
     }
@@ -281,7 +284,7 @@ void mario::colliedWithFloorBrick()
         } else if(typeid(*item) == typeid(stonebricks)){
             //qDebug() << "Collided with stone brick";
         }
-        if(typeid(*item) == typeid(floorBricks)){
+        if(typeid(*item) == typeid(floorBricks) or typeid(*item) == typeid(brokenbricks)){
             //qDebug() << "collided floor brick";
             //qDebug() << "size: x from" << item->x()-25 << " to " << item->x()+25 << ";y from" << item->y()-50 << " to " << item->y()+50;
             //qDebug() <<"mario x" <<x()<<" y "<<y();
@@ -326,7 +329,7 @@ void mario::colliedWithFloorBrick()
                 }
             }
         }
-        if(typeid(*item) == typeid(stonebricks)){
+        if(typeid(*item) == typeid(stonebricks) or typeid(*item) == typeid(brokenbricks)){
             //qDebug() << "collided stone brick";
             //qDebug() << "size: x from" << item->x()-25 << " to " << item->x()+25 << ";y from" << item->y()-25 << " to " << item->y()+25;
             //qDebug() <<"mario x" <<x()<<" y "<<y();
@@ -377,9 +380,9 @@ void mario::colliedWithToxicmushroom(){
     for(int i =0;i<collidingItems.size();i++){
         QGraphicsItem *item = collidingItems[i];
         if((typeid(*item) == typeid(toxicmushroom)) && !invincible){
-            qDebug() << "collided toxicmushroom";
-            qDebug() << "size: x from" << item->x()-25 << " to " << item->x()+25 << ";y from" << item->y()-50 << " to " << item->y()+50;
-            qDebug() <<"mario x" <<x()<<" y "<<y();
+            //qDebug() << "collided toxicmushroom";
+            //qDebug() << "size: x from" << item->x()-25 << " to " << item->x()+25 << ";y from" << item->y()-50 << " to " << item->y()+50;
+            //qDebug() <<"mario x" <<x()<<" y "<<y();
             if((item->y() > y()) && (x() < item->x()+25) && (x() > item->x()-25))
                 decreasedHP = true;
             else if((item->x() < x()) && (y() > item->y()-48) && (y() < item->y()+48))
