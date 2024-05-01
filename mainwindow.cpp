@@ -7,6 +7,10 @@
 #include "boxbricks.h"
 #include "normalbricks.h"
 #include "toxicmushroom.h"
+#include "supermushroom.h"
+#include "fireflower.h"
+#include "waterpipe.h"
+#include "bullet.h"
 #include "coin.h"
 #include <QLabel>
 #include <QGraphicsScene>
@@ -21,7 +25,6 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
         setFixedSize(1400,600);
         setWindowTitle("SuperMario");
         // 創建場景
@@ -47,7 +50,7 @@ MainWindow::MainWindow(QWidget *parent)
         const int floorbrickWidth = 50;
         const int numBricks = 7000 / floorbrickWidth;
         for (int i = 0; i < numBricks; ++i) {
-            if(((i>=11)&&(i<=12)) || ((i>=35)&&(i<=45)) || ((i>=65)&&(i<=105))){
+            if(((i>=11)&&(i<=12)) || ((i>=35)&&(i<=45)) || ((i>=65)&&(i<=75))){
                 continue;
             }
             else
@@ -59,6 +62,7 @@ MainWindow::MainWindow(QWidget *parent)
 
         // 創建視圖並設置場景
         QGraphicsView *view = new QGraphicsView(scene);
+        view->setInteractive(true);
         view->setFixedSize(1400, 600); // 設置視圖大小為1400x600
         view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff); // 關閉水平滾動條
         view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff); // 關閉垂直滾動條
@@ -68,7 +72,6 @@ MainWindow::MainWindow(QWidget *parent)
         mario * player = new mario();
         scene->addItem(player);
         player->readview(view);
-
         player->setFlag(QGraphicsItem::ItemIsFocusable);
         player->setFocus();
         mario::hp=3;
@@ -78,29 +81,40 @@ MainWindow::MainWindow(QWidget *parent)
         mario::hplabel=hpLabel;
 
         //create toxic mushroom
+        toxicmushroom *mushroom1 = new toxicmushroom();
+        scene->addItem(mushroom1);
 
-        toxicmushroom *mushroom = new toxicmushroom();
-        scene->addItem(mushroom);
+        //create super mushroom
+        supermushroom *supermushroom1 = new supermushroom();
+        scene->addItem(supermushroom1);
+
+        //create fire flower
+        fireflower *fireflower1 = new fireflower();
+        scene->addItem(fireflower1);
+
+        //create waterpipe
+        waterpipe *waterpipe1 = new waterpipe();
+        scene->addItem(waterpipe1);
 
         //score and coin
-            Coin::score = 0;
-            QLabel *scoreLabel = new QLabel("Score: 0", view);
-            scoreLabel->setStyleSheet("QLabel { color : red; font-size: 45px; }");
-            scoreLabel->move(0,0);
-            Coin::scorelabel = scoreLabel;
-            for(int i=1;i<10;i++){
-                Coin *coin = new Coin(200*i,400);
-                scene->addItem(coin);
-           }
+        Coin::score = 0;
+        QLabel *scoreLabel = new QLabel("Score: 0", view);
+        scoreLabel->setStyleSheet("QLabel { color : red; font-size: 45px; }");
+        scoreLabel->move(0,0);
+        Coin::scorelabel = scoreLabel;
+        for(int i=1;i<10;i++){
+            Coin *coin = new Coin(200*i,400);
+            scene->addItem(coin);
+       }
+
 
         // brick's height and weight
         const int w= 50;
         const int h = 50;
 
-
         //stone建構
         std::vector<std::vector<int>> stonebrickpos={
-            {10*w,6*h},{11*w,6*h}  //stone position
+            {10*w,7*h},{11*w,7*h}  //stone position
         };
         for (size_t i = 0; i < stonebrickpos.size(); i ++) {
             int x = stonebrickpos[i][0];

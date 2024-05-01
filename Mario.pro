@@ -11,6 +11,8 @@ CONFIG += c++11
 SOURCES += \
     boxbricks.cpp \
     brokenbricks.cpp \
+    bullet.cpp \
+    fireflower.cpp \
     floorbricks.cpp \
     loginwindow.cpp \
     main.cpp \
@@ -18,6 +20,7 @@ SOURCES += \
     mario.cpp \
     normalbricks.cpp \
     stonebricks.cpp \
+    supermushroom.cpp \
     toxicmushroom.cpp \
     waterpipe.cpp \
     coin.cpp
@@ -25,12 +28,15 @@ SOURCES += \
 HEADERS += \
     boxbricks.h \
     brokenbricks.h \
+    bullet.h \
+    fireflower.h \
     floorbricks.h \
     loginwindow.h \
     mainwindow.h \
     mario.h \
     normalbricks.h \
     stonebricks.h \
+    supermushroom.h \
     toxicmushroom.h \
     waterpipe.h \
     coin.h

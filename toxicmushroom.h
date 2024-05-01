@@ -18,6 +18,7 @@ public slots:
     void countY();
     void colliedWithBrick();
     void colliedWithMario();
+    //void hitByBullet();
 private :
     bool collidedTop = false, collidedBottom = true ,collidedLeft = false, collidedRight = false;
     bool faceLeft = true;

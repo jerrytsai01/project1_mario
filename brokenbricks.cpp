@@ -29,6 +29,7 @@ void brokenbricks::bounce(){
                 qDebug()<<itemy;
                 if(itemx+itemw>=x and itemx<=x+50 and itemy <=y+50 and itemy >= y+46){
                     // delete
+                   // mario::collidedTop=true;
                     scene()->removeItem(this);
                     delete this;
                     return;

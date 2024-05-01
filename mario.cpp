@@ -6,8 +6,12 @@
 #include "normalbricks.h"
 #include "boxbricks.h"
 #include "toxicmushroom.h"
+#include "supermushroom.h"
+#include "fireflower.h"
+#include "bullet.h"
 #include <QKeyEvent>
-//#include <QDebug>
+#include <QMouseEvent>
+#include <QDebug>
 #include <QTimer>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsView>
@@ -29,11 +33,14 @@ mario::mario(QGraphicsPixmapItem *parent):QGraphicsPixmapItem (parent)
     QTimer*timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(checkKeyState()));
     connect(timer, SIGNAL(timeout()), this, SLOT(animation()));
-       connect(timer, SIGNAL(timeout()), this, SLOT(gravity()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(gravity()));
     connect(timer, SIGNAL(timeout()), this, SLOT(lockview()));
     //connect(timer, SIGNAL(timeout()), this, SLOT(colliedWithBrick()));
     connect(timer, SIGNAL(timeout()), this, SLOT(marioDead()));
-    connect(timer, SIGNAL(timeout()), this, SLOT(colliedWithToxicmushroom()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(colliedWithMushroom()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(eatFireflower()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(shooting()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(Shooterform()));
     connect(timer, SIGNAL(timeout()), this, SLOT(HP()));
     timer->start(10);
 
@@ -60,7 +67,7 @@ void mario::keyPressEvent(QKeyEvent *event)
         leftKey = true;
     }
     if(event->key() == Qt::Key_Right){
-       rightKey = true;
+        rightKey = true;
     }
     if((event->key() == Qt::Key_Up)&&collidedBottom){
         //qDebug() << "jump";
@@ -73,9 +80,9 @@ void mario::keyPressEvent(QKeyEvent *event)
 void mario::keyReleaseEvent(QKeyEvent *reEvent)
 {
     if (reEvent->isAutoRepeat()) {
-            // ignore auto event
-            return;
-        }
+        // ignore auto event
+        return;
+    }
     if (reEvent->key() == Qt::Key_Right) {
         rightKey = false;
         faceRight = true;
@@ -112,14 +119,14 @@ void mario::checkKeyState()
             faceRight = true;
             setPos(x()+2,y());
         }else;
-            //qDebug()<<"stopped Right";
+        //qDebug()<<"stopped Right";
     }
     if((leftKey == true)&&(x()>0)){
         if(!collidedLeft){
-        faceRight = false;
-        setPos(x()-2,y());}
+            faceRight = false;
+            setPos(x()-2,y());}
         else;
-            //qDebug()<<"stopped Left";
+        //qDebug()<<"stopped Left";
     }
     if(upKey){
         UPtimer++;
@@ -136,7 +143,7 @@ void mario::checkKeyState()
 
 //給持續向下速度
 void mario::gravity(){
-        //collidedBottom = false;
+    //collidedBottom = false;
     if(!collidedBottom){
         double acceleration;
         if(small)
@@ -284,7 +291,7 @@ void mario::colliedWithFloorBrick()
         } else if(typeid(*item) == typeid(stonebricks)){
             //qDebug() << "Collided with stone brick";
         }
-        if(typeid(*item) == typeid(floorBricks) or typeid(*item) == typeid(brokenbricks)){
+        if(typeid(*item) == typeid(floorBricks)){
             //qDebug() << "collided floor brick";
             //qDebug() << "size: x from" << item->x()-25 << " to " << item->x()+25 << ";y from" << item->y()-50 << " to " << item->y()+50;
             //qDebug() <<"mario x" <<x()<<" y "<<y();
@@ -308,6 +315,7 @@ void mario::colliedWithFloorBrick()
                     collidedLeft = true;
                 }
             }
+            //big mario collide
             else{
                 if((item->y() > y()) && (x() < item->x()+28) && (x() > item->x()-28)){
                     if(!upKey&&velocity!=0){
@@ -318,7 +326,7 @@ void mario::colliedWithFloorBrick()
                     BottomY = y();
                     collidedBottom = true;
                 }
-                else if((item->x() >= x()) && (y() > item->y()-68) && (y() < item->y()+68)){
+                else if((item->x() >= x()) && (y() > item->y()-60) && (y() < item->y()+60)){
                     setPos(x(),y()-0.1);
                     //qDebug() << "111111111111111";
                     collidedRight = true;
@@ -364,17 +372,17 @@ void mario::colliedWithFloorBrick()
                     collidedTop = true;
                     upKey = false;
                 }
-                if((item->x() > x()) && (y() > item->y()-45) && (y() < item->y()+45))
+                if((item->x() > x()) && (y() > item->y()-68) && (y() < item->y()+68))
                     collidedRight = true;
-                if((item->x() < x()) && (y() > item->y()-45) && (y() < item->y()+45))
+                if((item->x() < x()) && (y() > item->y()-68) && (y() < item->y()+68))
                     collidedLeft = true;
             }
         }
-    }
     //qDebug() << "collideBottom:" <<collidedBottom << "; collideR:" << collidedRight << "; collideL:" << collidedLeft <<"; CollideTop:" <<collidedTop;
 }
+}
 
-void mario::colliedWithToxicmushroom(){
+void mario::colliedWithMushroom(){
     decreasedHP = false;
     QList<QGraphicsItem*> collidingItems =scene()-> collidingItems(this, Qt::IntersectsItemBoundingRect);
     for(int i =0;i<collidingItems.size();i++){
@@ -392,9 +400,61 @@ void mario::colliedWithToxicmushroom(){
             if(decreasedHP)
                 invincible = true;
         }
+        if(typeid(*item) == typeid (supermushroom)){
+            small = false;
+            qDebug() << "small : " << small;
+        }
     }
     //qDebug() << "decreasedHP = " << decreasedHP ;
 }
+
+//吃火焰花
+void mario::eatFireflower(){
+    QList<QGraphicsItem*> collidingItems =scene()-> collidingItems(this, Qt::IntersectsItemBoundingRect);
+    for(int i =0;i<collidingItems.size();i++){
+        QGraphicsItem *item = collidingItems[i];
+        if((typeid(*item) == typeid(fireflower))){
+            shooterform = true;
+            numberofBullet = 3;
+        }
+    }
+}
+
+void mario::mousePressEvent(QMouseEvent *event){
+    if((event->button() == Qt::LeftButton) && (shooterform)){
+        canshoot = true;
+        //if (event->isAutoRepeat())
+            //return;
+    }
+}
+
+//射子彈
+void mario::shooting(){
+    if((shooterform) && (canshoot)){
+        bullet * BULLET = new bullet();
+        scene()->addItem(BULLET);
+        if(faceRight)
+            BULLET->setPos(x()+3, y());
+        else
+            BULLET->setPos(x()-3, y());
+        numberofBullet--;
+        qDebug() << "shoot a bullet";
+        qDebug() << "mario now has " << numberofBullet << " bullets";
+        canshoot = false;
+
+    }
+}
+
+//射擊模式
+void mario::Shooterform(){
+    if (numberofBullet == 0) {
+        shooterform = false;
+    }
+    else if ((numberofBullet <= 3) && (numberofBullet > 0)) {
+        shooterform = true;
+    }
+}
+
 
 //if blood == 0, respawn to begin
 void mario::marioDead()

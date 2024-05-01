@@ -1,11 +1,14 @@
 #ifndef WATERPIPE_H
 #define WATERPIPE_H
 
-
-class waterpipe
-{
+#include <QGraphicsPixmapItem>
+#include <QObject>
+#include <QGraphicsView>
+class waterpipe: public QObject, public QGraphicsPixmapItem{
+    Q_OBJECT
 public:
-    waterpipe();
+    waterpipe(QGraphicsPixmapItem *parent = 0);
+    void readview(QGraphicsView *view);
 };
 
 #endif // WATERPIPE_H
