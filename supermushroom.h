@@ -12,7 +12,14 @@ public:
 public slots:
     void eaten_by_mario();
     void supermushroom_move();
+    void gravity();
+    void countY();
+    void collidedWithBrick();
+private:
+    bool collidedBottom = false, collidedLeft = false, collidedRight = false, collidedTop = false;
+    bool faceRight = false;
+    double Vg = 0, acceleration;
+    int Deathtime = 0;
 };
 
 #endif // SUPERMUSHROOM_H
-

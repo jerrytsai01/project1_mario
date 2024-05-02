@@ -1,6 +1,7 @@
 #include "toxicmushroom.h"
 #include "mainwindow.h"
 #include "floorbricks.h"
+#include "bullet.h"
 #include "mario.h"
 #include <QDebug>
 #include <QTimer>
@@ -24,7 +25,7 @@ toxicmushroom::toxicmushroom(QGraphicsPixmapItem *parent):QGraphicsPixmapItem (p
     connect(timer, SIGNAL(timeout()), this, SLOT(gravity()));
     connect(timer, SIGNAL(timeout()), this, SLOT(colliedWithBrick()));
     connect(timer, SIGNAL(timeout()), this, SLOT(colliedWithMario()));
-    connect(timer, SIGNAL(timeout()), this, SLOT(hitByBullet));
+    connect(timer, SIGNAL(timeout()), this, SLOT(hitByBullet()));
     connect(timer, SIGNAL(timeout()), this, SLOT(livecheck()));
     timer->start(10);
 }
@@ -77,17 +78,15 @@ void toxicmushroom::colliedWithMario(){
             //qDebug() << "collided mario";
             //qDebug() << "size: x from" << item->x()-25 << " to " << item->x()+25 << ";y from" << item->y()-50 << " to " << item->y()+50;
             //qDebug() << "toxicmushroom x" <<x()<<" y "<<y();
+            //if(MainWindow::player.small == true)
             if((item->y() < y()) && (x() < item->x()+25) && (x() > item->x()-25)){
                 live = false;
-                setPixmap(QPixmap(":/new/prefix1/image/toxic mushroom3.png"));
-                qDebug() << "Toxicmushroom is killed by Mario";
             }
         }
     }
 }
 
 //被子彈打到
-/*
 void toxicmushroom::hitByBullet(){
     QList<QGraphicsItem*> collidingItems =scene()-> collidingItems(this, Qt::IntersectsItemBoundingRect);
     for(int i =0;i<collidingItems.size();i++){
@@ -95,12 +94,12 @@ void toxicmushroom::hitByBullet(){
         if(typeid(*item) == typeid(bullet)){
             qDebug() << "hit by bullet";
             qDebug() << "toxicmushroom x" <<x()<<" y "<<y();
-                live = false;
-                qDebug() << "Toxicmushroom is killed by bullet";
+            live = false;
+            qDebug() << "Toxicmushroom is killed by bullet";
         }
     }
 }
-*/
+
 void toxicmushroom::colliedWithBrick(){
     collidedBottom = false;
     collidedLeft = false;
@@ -121,8 +120,7 @@ void toxicmushroom::colliedWithBrick(){
                 collidedRight = true;
             if((item->x()+25 >= x()) && (y() > item->y()-48) && (y() < item->y()+48))
                 collidedLeft = true;
-
-            }
+        }
     }
 }
 
@@ -130,8 +128,13 @@ void toxicmushroom::colliedWithBrick(){
 //確認有無存活
 void toxicmushroom::livecheck(){
     if(!live){
-        scene()->removeItem(this);
-        delete this;
-        qDebug() << "toxicmushroom deleted" ;
+        setPixmap(QPixmap(":/new/prefix1/image/toxic mushroom3.png"));
+        qDebug() << "Toxicmushroom is killed by Mario";
+        deathTimer ++;
+        if(deathTimer >= 10){
+            scene()->removeItem(this);
+            delete this;
+            qDebug() << "toxicmushroom deleted" ;
+        }
     }
 }

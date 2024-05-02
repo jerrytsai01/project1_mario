@@ -13,6 +13,8 @@ SOURCES += \
     brokenbricks.cpp \
     bullet.cpp \
     fireflower.cpp \
+    flag.cpp \
+    flag_pole.cpp \
     floorbricks.cpp \
     loginwindow.cpp \
     main.cpp \
@@ -30,6 +32,8 @@ HEADERS += \
     brokenbricks.h \
     bullet.h \
     fireflower.h \
+    flag.h \
+    flag_pole.h \
     floorbricks.h \
     loginwindow.h \
     mainwindow.h \

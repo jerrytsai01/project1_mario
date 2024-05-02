@@ -28,11 +28,14 @@ void brokenbricks::bounce(){
                 qreal itemy = itemPos.y();
                 qDebug()<<itemy;
                 if(itemx+itemw>=x and itemx<=x+50 and itemy <=y+50 and itemy >= y+46){
+                    DeathTime++;
+                    if(DeathTime > 3){
                     // delete
-                   // mario::collidedTop=true;
+                    // mario::collidedTop=true;
                     scene()->removeItem(this);
                     delete this;
                     return;
+                    }
                 }
             }
         }

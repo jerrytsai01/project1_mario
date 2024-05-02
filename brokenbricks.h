@@ -13,6 +13,7 @@ private slots:
 private :
     int x;
     int y;
+    int DeathTime = 0;
 };
 
 #endif // BROKENBRICKS_H

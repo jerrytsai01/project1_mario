@@ -18,12 +18,12 @@ public slots:
     void countY();
     void colliedWithBrick();
     void colliedWithMario();
-    //void hitByBullet();
+    void hitByBullet();
 private :
     bool collidedTop = false, collidedBottom = true ,collidedLeft = false, collidedRight = false;
     bool faceLeft = true;
     double velocity = 0;
-    int timer = 0;
+    int timer = 0, deathTimer = 0;
     bool live = true;
     QGraphicsView *view;
 };

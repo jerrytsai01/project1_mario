@@ -8,14 +8,18 @@
 #include "toxicmushroom.h"
 #include "supermushroom.h"
 #include "fireflower.h"
+#include "waterpipe.h"
+#include "flag_pole.h"
 #include "bullet.h"
 #include <QKeyEvent>
 #include <QMouseEvent>
+#include <QGraphicsSceneMouseEvent>
 #include <QDebug>
 #include <QTimer>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsView>
 #include <QGraphicsItem>
+#include <QtWidgets>
 #include <QList>
 #include <typeinfo>
 
@@ -23,12 +27,11 @@ int mario::hp = 3;
 QLabel *mario::hplabel=nullptr;
 mario::mario(QGraphicsPixmapItem *parent):QGraphicsPixmapItem (parent)
 {
-    setFlag(QGraphicsItem::ItemIsMovable);
+    setFlag(QGraphicsItem::ItemIsFocusable);
     setFlag(QGraphicsItem::ItemIsSelectable);
     //初始位置跟圖片
     setPos(0,400);
     setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_R.png"));
-
     //持續偵測的計時
     QTimer*timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(checkKeyState()));
@@ -59,23 +62,23 @@ void mario::lockview(){
         view->centerOn(pos().x(),300);
     }
 }
+
 //按鍵按下事件
 void mario::keyPressEvent(QKeyEvent *event)
 {
 
-    if(event->key() == Qt::Key_Left){
+    if(event->key() == Qt::Key_Left or event->key() == Qt::Key_A){
         leftKey = true;
     }
-    if(event->key() == Qt::Key_Right){
+    if(event->key() == Qt::Key_Right or event->key() == Qt::Key_D){
         rightKey = true;
     }
-    if((event->key() == Qt::Key_Up)&&collidedBottom){
+    if((event->key() == Qt::Key_Up or event->key() == Qt::Key_W)&&collidedBottom){
         //qDebug() << "jump";
         upKey = true;
         //setPos(x(),y()-150);
     }
 }
-
 //按鍵放開事件
 void mario::keyReleaseEvent(QKeyEvent *reEvent)
 {
@@ -83,7 +86,7 @@ void mario::keyReleaseEvent(QKeyEvent *reEvent)
         // ignore auto event
         return;
     }
-    if (reEvent->key() == Qt::Key_Right) {
+    if (reEvent->key() == Qt::Key_Right or reEvent->key() == Qt::Key_D) {
         rightKey = false;
         faceRight = true;
         if(small)
@@ -91,7 +94,7 @@ void mario::keyReleaseEvent(QKeyEvent *reEvent)
         else
             setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_R_stand.png"));
     }
-    if (reEvent->key() == Qt::Key_Left) {
+    if (reEvent->key() == Qt::Key_Left or reEvent->key() == Qt::Key_A) {
         leftKey = false;
         faceRight = false;
         Ltimer = 0;
@@ -100,7 +103,7 @@ void mario::keyReleaseEvent(QKeyEvent *reEvent)
         else
             setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_L_stand.png"));
     }
-    if (reEvent->key() == Qt::Key_Up) {
+    if (reEvent->key() == Qt::Key_Up or reEvent->key() == Qt::Key_W) {
         upKey = false;
         UPtimer = 0;
         //velocity = 0;
@@ -110,7 +113,6 @@ void mario::keyReleaseEvent(QKeyEvent *reEvent)
             setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_L.png"));
     }
 }
-
 //因應按鍵按下改變位置
 void mario::checkKeyState()
 {    
@@ -118,14 +120,14 @@ void mario::checkKeyState()
         if(!collidedRight){
             faceRight = true;
             setPos(x()+2,y());
-        }else;
+        }//else;
         //qDebug()<<"stopped Right";
     }
     if((leftKey == true)&&(x()>0)){
         if(!collidedLeft){
             faceRight = false;
             setPos(x()-2,y());}
-        else;
+        //else;
         //qDebug()<<"stopped Left";
     }
     if(upKey){
@@ -140,7 +142,6 @@ void mario::checkKeyState()
         }
     }
 }
-
 //給持續向下速度
 void mario::gravity(){
     //collidedBottom = false;
@@ -154,14 +155,12 @@ void mario::gravity(){
         //qDebug() << y();
     }
 }
-
 //Vc = Vg + V --> Y+=Vc
 void mario::countY(){
     Vc = Vg + velocity;
     if(Vc >= 4)
         Vc = 4;
     //
-
     if(((collidedBottom)&&(Vc>=0))||((collidedTop)&&(Vc<0))){   //如果y==450且VC>=0則將速度和位置歸零
         collidedBottom = true;
         velocity = 0;
@@ -176,10 +175,10 @@ void mario::countY(){
         TopY = y();
     //qDebug() << "Y = " << y()-Vc << "+" << Vc;
 }
-
 //change the skin of mario
 void mario::animation()
 {
+    qDebug() << pos();
     if(rightKey&&collidedBottom) {
         Rtimer++; // 增加計數器
         if(small){
@@ -213,49 +212,19 @@ void mario::animation()
         }
     }
     else if(!collidedBottom){
-        if(upKey){
-            UPtimer++;
-            if(small){//small mario up
-                if(faceRight)
-                    setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_jump1_R.png"));
-                else
-                    setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_jump1_L.png"));
-            }
-            else{//big mario up
-                if(faceRight){
-                    if(UPtimer%100 < 40)
-                        setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_R_jump2.png"));
-                    else
-                        setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_R_jump1.png"));
-                }
-                else{
-                    if(UPtimer%50 < 25)
-                        setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_L_jump1.png"));
-                    else
-                        setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_L_jump2.png"));
-                }
-            }
+        UPtimer++;
+        if(small){//small mario up
+            if(faceRight)
+                setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_jump1_R.png"));
+            else
+                setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_jump1_L.png"));
         }
-        else{
-            if(small){//small mario downward
-                if(faceRight)
-                    setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_jump2_R.png"));
-                else
-                    setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_jump2_L.png"));
+        else{//big mario up
+            if(faceRight){
+                setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_R_jump1.png"));
             }
-            else{//big mario downward
-                if(faceRight){
-                    if(UPtimer%100 < 60)
-                        setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_R_jump4.png"));
-                    else
-                        setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_R_jump3.png"));
-                }
-                else{
-                    if(UPtimer%50 < 25)
-                        setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_L_jump3.png"));
-                    else
-                        setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_L_jump4.png"));
-                }
+            else{
+                setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_L_jump1.png"));
             }
         }
     }
@@ -275,6 +244,19 @@ void mario::animation()
     }
 }
 
+void mario::fireEvent(QPoint aimPos){
+    qDebug() << "shoot";
+    if(numberofBullet>0){
+        bullet * BULLET = new bullet();
+        scene()->addItem(BULLET);
+        BULLET-> setTargetPosition(aimPos, pos());
+        numberofBullet--;
+        qDebug() << "shoot a bullet";
+        qDebug() << "mario now has " << numberofBullet << " bullets";
+        //if (event->isAutoRepeat())
+            //return;
+    }
+}
 //if collied with brick, record the direction of collision
 void mario::colliedWithFloorBrick()
 {
@@ -286,11 +268,6 @@ void mario::colliedWithFloorBrick()
     for(int i =0;i<collidingItems.size();i++){
         QGraphicsItem *item = collidingItems[i];
         //if collided with block type
-        if(typeid(*item) == typeid(floorBricks)){
-            //qDebug() << "Collided with floor brick";
-        } else if(typeid(*item) == typeid(stonebricks)){
-            //qDebug() << "Collided with stone brick";
-        }
         if(typeid(*item) == typeid(floorBricks)){
             //qDebug() << "collided floor brick";
             //qDebug() << "size: x from" << item->x()-25 << " to " << item->x()+25 << ";y from" << item->y()-50 << " to " << item->y()+50;
@@ -378,8 +355,50 @@ void mario::colliedWithFloorBrick()
                     collidedLeft = true;
             }
         }
-    //qDebug() << "collideBottom:" <<collidedBottom << "; collideR:" << collidedRight << "; collideL:" << collidedLeft <<"; CollideTop:" <<collidedTop;
-}
+        if(typeid(*item) == typeid(waterpipe)){
+            if(small){
+                if((item->y() > y()) && (x() < item->x()+48) && (x() > item->x()-90)){
+                    if(!upKey&&velocity!=0){
+                        velocity = 0;
+                        Vg = 0;
+                        Vc = 0;
+                    }
+                    BottomY = y();
+                    collidedBottom = true;
+                }
+                if((item->x() >= x()) && (y()+50 > item->y()) && (y() < item->y()+100)){
+                    setPos(x(),y()-0.2);
+                    collidedRight = true;
+                }
+                if((item->x() <= x()) && (y()+50 > item->y()) && (y() < item->y()+100)){
+                    setPos(x(),y()-0.2);
+                    collidedLeft = true;
+                }
+            }
+            //big mario collide
+            else{
+                if((item->y() > y()) && (x() < item->x()+56) && (x() > item->x()-100)){
+                    if(!upKey&&velocity!=0){
+                        velocity = 0;
+                        Vg = 0;
+                        Vc = 0;
+                    }
+                    BottomY = y();
+                    collidedBottom = true;
+                }
+                else if((item->x() >= x()) && (y() > item->y()) && (y() < item->y()+100)){
+                    collidedRight = true;
+                }
+                else if((item->x() <= x()) && (y() > item->y()) && (y() < item->y()+100)){
+                    collidedLeft = true;
+                }
+            }
+        }
+        if(typeid(*item) == typeid(flag_pole)){
+
+        }
+        //qDebug() << "collideBottom:" <<collidedBottom << "; collideR:" << collidedRight << "; collideL:" << collidedLeft <<"; CollideTop:" <<collidedTop;
+    }
 }
 
 void mario::colliedWithMushroom(){
@@ -401,61 +420,23 @@ void mario::colliedWithMushroom(){
                 invincible = true;
         }
         if(typeid(*item) == typeid (supermushroom)){
+            setPos(x(), y()-10);
             small = false;
             qDebug() << "small : " << small;
         }
     }
     //qDebug() << "decreasedHP = " << decreasedHP ;
 }
-
 //吃火焰花
 void mario::eatFireflower(){
     QList<QGraphicsItem*> collidingItems =scene()-> collidingItems(this, Qt::IntersectsItemBoundingRect);
     for(int i =0;i<collidingItems.size();i++){
         QGraphicsItem *item = collidingItems[i];
         if((typeid(*item) == typeid(fireflower))){
-            shooterform = true;
-            numberofBullet = 3;
+            numberofBullet += 3;
         }
     }
 }
-
-void mario::mousePressEvent(QMouseEvent *event){
-    if((event->button() == Qt::LeftButton) && (shooterform)){
-        canshoot = true;
-        //if (event->isAutoRepeat())
-            //return;
-    }
-}
-
-//射子彈
-void mario::shooting(){
-    if((shooterform) && (canshoot)){
-        bullet * BULLET = new bullet();
-        scene()->addItem(BULLET);
-        if(faceRight)
-            BULLET->setPos(x()+3, y());
-        else
-            BULLET->setPos(x()-3, y());
-        numberofBullet--;
-        qDebug() << "shoot a bullet";
-        qDebug() << "mario now has " << numberofBullet << " bullets";
-        canshoot = false;
-
-    }
-}
-
-//射擊模式
-void mario::Shooterform(){
-    if (numberofBullet == 0) {
-        shooterform = false;
-    }
-    else if ((numberofBullet <= 3) && (numberofBullet > 0)) {
-        shooterform = true;
-    }
-}
-
-
 //if blood == 0, respawn to begin
 void mario::marioDead()
 {
