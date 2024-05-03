@@ -82,8 +82,6 @@ MainWindow::MainWindow(QWidget *parent)
     scene->addItem(waterpipe1);
 
     //creat final flag
-    flag *Flag = new flag();
-    scene ->addItem(Flag);
     flag_pole *flagPole = new flag_pole();
     scene->addItem(flagPole);
 
@@ -146,11 +144,21 @@ MainWindow::MainWindow(QWidget *parent)
                 // 连接定时器的 timeout() 信号到 lockview() 槽函数
                 connect(timer, &QTimer::timeout, this, [=]() {
                     player->lockview(view);
-                });
+                });ss
                 // 设置定时器的间隔时间，单位为毫秒
                 int interval = 1; // 设置为 100 毫秒，即每隔 100 毫秒调用一次 lockview() 函数
                 timer->start(interval);*/
 
+    // find max z value and assign to mario
+    QList<QGraphicsItem*> items = scene->items();
+    qreal maxZValue = std::numeric_limits<qreal>::min();
+    for (QGraphicsItem *item : items) {
+        qreal z = item->zValue();
+        if (z > maxZValue) {
+            maxZValue = z;
+        }
+    }
+    player->setZValue(maxZValue);
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event) {
@@ -160,9 +168,10 @@ void MainWindow::mousePressEvent(QMouseEvent *event) {
     player->setFocus();
 }
 
-
 MainWindow::~MainWindow()
 {
     //delete ui;
 }
+
+
 

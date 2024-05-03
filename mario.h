@@ -6,6 +6,7 @@
 #include <QGraphicsView>
 #include <QLabel>
 #include <QMouseEvent>
+#include "flag.h"
 class mario :public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
@@ -19,9 +20,10 @@ public:
     static int hp ;
     static QLabel *hplabel;
     int score = 0, fireBall = 100, faliure = 0;
-    bool marioIsDead = false;
+    bool marioIsDead = false, win = false;
     bool collidedTop;
-    bool fire = false, small = true;;
+    bool fire = false, small = false;
+    flag *Flag;
 public slots:
     void checkKeyState();
     void gravity();
@@ -35,6 +37,7 @@ public slots:
     void HP();
     void InvincibleForm();
     void marioDead();
+    void winEvent();
 private:
     bool rightKey = false, leftKey = false,
          upKey = false, faceRight = true, reachTop = false;
@@ -47,8 +50,9 @@ private:
     //for test
     double TopY = 600, BottomY = 0;
     int numberofBullet = 100;
-    bool shooterform = true, canshoot = false;
+    bool shooterform = true, canshoot = false, flagExist = false;
     QGraphicsView *view;
+    ~mario();
 };
 
 #endif // MARIO_H

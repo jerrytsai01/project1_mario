@@ -11,6 +11,7 @@
 #include "waterpipe.h"
 #include "flag_pole.h"
 #include "bullet.h"
+#include "flag.h"
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QGraphicsSceneMouseEvent>
@@ -30,8 +31,9 @@ mario::mario(QGraphicsPixmapItem *parent):QGraphicsPixmapItem (parent)
     setFlag(QGraphicsItem::ItemIsFocusable);
     setFlag(QGraphicsItem::ItemIsSelectable);
     //初始位置跟圖片
-    setPos(0,400);
+    setPos(6500,400);
     setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_R.png"));
+
     //持續偵測的計時
     QTimer*timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(checkKeyState()));
@@ -45,6 +47,7 @@ mario::mario(QGraphicsPixmapItem *parent):QGraphicsPixmapItem (parent)
     connect(timer, SIGNAL(timeout()), this, SLOT(shooting()));
     connect(timer, SIGNAL(timeout()), this, SLOT(Shooterform()));
     connect(timer, SIGNAL(timeout()), this, SLOT(HP()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(winEvent()));
     timer->start(10);
 
     QTimer *Timer2 = new QTimer(this);
@@ -66,17 +69,18 @@ void mario::lockview(){
 //按鍵按下事件
 void mario::keyPressEvent(QKeyEvent *event)
 {
-
-    if(event->key() == Qt::Key_Left or event->key() == Qt::Key_A){
-        leftKey = true;
-    }
-    if(event->key() == Qt::Key_Right or event->key() == Qt::Key_D){
-        rightKey = true;
-    }
-    if((event->key() == Qt::Key_Up or event->key() == Qt::Key_W)&&collidedBottom){
-        //qDebug() << "jump";
-        upKey = true;
-        //setPos(x(),y()-150);
+    if(!win){
+        if(event->key() == Qt::Key_Left or event->key() == Qt::Key_A){
+            leftKey = true;
+        }
+        if(event->key() == Qt::Key_Right or event->key() == Qt::Key_D){
+            rightKey = true;
+        }
+        if((event->key() == Qt::Key_Up or event->key() == Qt::Key_W)&&collidedBottom){
+            //qDebug() << "jump";
+            upKey = true;
+            //setPos(x(),y()-150);
+        }
     }
 }
 //按鍵放開事件
@@ -157,93 +161,96 @@ void mario::gravity(){
 }
 //Vc = Vg + V --> Y+=Vc
 void mario::countY(){
-    Vc = Vg + velocity;
-    if(Vc >= 4)
-        Vc = 4;
-    //
-    if(((collidedBottom)&&(Vc>=0))||((collidedTop)&&(Vc<0))){   //如果y==450且VC>=0則將速度和位置歸零
-        collidedBottom = true;
-        velocity = 0;
-        Vg = 0;
-        Vc = 0;
-        //qDebug() << "from " << BottomY << " to " << TopY << " high " << BottomY - TopY;
-        //qDebug() <<"Vc:" << Vc << "; Vg" << Vg << "; velocity:" << velocity;
-        //qDebug() << "countY:collideBottom:" << collidedBottom <<"; collideTop:" <<collidedTop;
+    if(!win){
+        Vc = Vg + velocity;
+        if(Vc >= 4)
+            Vc = 4;
+        //
+        if(((collidedBottom)&&(Vc>=0))||((collidedTop)&&(Vc<0))){   //如果y==450且VC>=0則將速度和位置歸零
+            collidedBottom = true;
+            velocity = 0;
+            Vg = 0;
+            Vc = 0;
+            //qDebug() << "from " << BottomY << " to " << TopY << " high " << BottomY - TopY;
+            //qDebug() <<"Vc:" << Vc << "; Vg" << Vg << "; velocity:" << velocity;
+            //qDebug() << "countY:collideBottom:" << collidedBottom <<"; collideTop:" <<collidedTop;
+        }
+        setPos(x(), y()+Vc);
+        if(y() < TopY)
+            TopY = y();
+        //qDebug() << "Y = " << y()-Vc << "+" << Vc;
     }
-    setPos(x(), y()+Vc);
-    if(y() < TopY)
-        TopY = y();
-    //qDebug() << "Y = " << y()-Vc << "+" << Vc;
 }
 //change the skin of mario
 void mario::animation()
 {
     qDebug() << pos();
-    if(rightKey&&collidedBottom) {
-        Rtimer++; // 增加計數器
-        if(small){
-            if(Rtimer % 50 < 25) { // 控制切換速度
-                setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_run2_R.png"));
-            } else {
-                setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_run1_R.png"));
-            }
-        }
-        else{
-            if(Rtimer % 50 < 25) { // 控制切換速度
-                setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_R_run2.png"));
-            } else {
-                setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_R_run1.png"));
-            }
-        }
-    }
-    else if(leftKey&&collidedBottom){
-        Ltimer++;
-        if(small){
-            if(Ltimer % 50 < 25)
-                setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_run2_L.png"));
-            else
-                setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_run1_L.png"));
-        }
-        else{
-            if(Ltimer % 50 < 25)
-                setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_L_run2.png"));
-            else
-                setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_L_run1.png"));
-        }
-    }
-    else if(!collidedBottom){
-        UPtimer++;
-        if(small){//small mario up
-            if(faceRight)
-                setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_jump1_R.png"));
-            else
-                setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_jump1_L.png"));
-        }
-        else{//big mario up
-            if(faceRight){
-                setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_R_jump1.png"));
+    if(!win){
+        if(rightKey&&collidedBottom) {
+            Rtimer++; // 增加計數器
+            if(small){
+                if(Rtimer % 50 < 25) { // 控制切換速度
+                    setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_run2_R.png"));
+                } else {
+                    setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_run1_R.png"));
+                }
             }
             else{
-                setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_L_jump1.png"));
+                if(Rtimer % 50 < 25) { // 控制切換速度
+                    setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_R_run2.png"));
+                } else {
+                    setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_R_run1.png"));
+                }
             }
         }
-    }
-    else{
-        if(small){
-            if(faceRight)
-                setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_R.png"));
-            else
-                setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_L.png"));
+        else if(leftKey&&collidedBottom){
+            Ltimer++;
+            if(small){
+                if(Ltimer % 50 < 25)
+                    setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_run2_L.png"));
+                else
+                    setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_run1_L.png"));
+            }
+            else{
+                if(Ltimer % 50 < 25)
+                    setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_L_run2.png"));
+                else
+                    setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_L_run1.png"));
+            }
+        }
+        else if(!collidedBottom){
+            UPtimer++;
+            if(small){//small mario up
+                if(faceRight)
+                    setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_jump1_R.png"));
+                else
+                    setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_jump1_L.png"));
+            }
+            else{//big mario up
+                if(faceRight){
+                    setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_R_jump1.png"));
+                }
+                else{
+                    setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_L_jump1.png"));
+                }
+            }
         }
         else{
-            if(faceRight)
-                setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_R_stand.png"));
-            else
-                setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_L_stand.png"));
+            if(small){
+                if(faceRight)
+                    setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_R.png"));
+                else
+                    setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_L.png"));
+            }
+            else{
+                if(faceRight)
+                    setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_R_stand.png"));
+                else
+                    setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_L_stand.png"));
+            }
         }
     }
 }
-
 void mario::fireEvent(QPoint aimPos){
     qDebug() << "shoot";
     if(numberofBullet>0){
@@ -395,7 +402,21 @@ void mario::colliedWithFloorBrick()
             }
         }
         if(typeid(*item) == typeid(flag_pole)){
-
+            win = true;
+            if(item->x() < x()){
+                faceRight = false;
+                if(small)
+                    setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stop_L.png"));
+                else
+                    setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_stop_R.png"));
+            }
+            else{
+                faceRight = true;
+                if(small)
+                    setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stop_R.png"));
+                else
+                    setPixmap(QPixmap(":/new/prefix1/image/Mario_big/mario_stop_L.png"));
+            }
         }
         //qDebug() << "collideBottom:" <<collidedBottom << "; collideR:" << collidedRight << "; collideL:" << collidedLeft <<"; CollideTop:" <<collidedTop;
     }
@@ -447,6 +468,39 @@ void mario::marioDead()
         hp = 3;
         faliure++;
     }
+}
+
+void mario::winEvent()
+{
+    if(x() > 5000 and !flagExist){
+        if (scene()) {
+            Flag = new flag();
+            scene()->addItem(Flag);
+        } else {
+            qDebug() << "Error: Scene is not valid!";
+        }
+        flagExist = true;
+    }
+    if(win){
+        if(Flag->y() < 390){
+            Flag->setPos(Flag->x(), Flag->y()+1.8);
+            if(!collidedBottom){
+                setPos(6775, y()+1.8);
+            }
+            else{
+                setPos(x(),y());
+            }
+        }
+        else{
+            win = false;
+            setPos(6850, 400);
+        }
+    }
+}
+
+mario::~mario()
+{
+        delete Flag;
 }
 
 void mario::HP(){

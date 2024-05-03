@@ -14,7 +14,6 @@ public:
 
 signals:
     void collected();
-
 private slots:
     void touch();
     void getcoin();
