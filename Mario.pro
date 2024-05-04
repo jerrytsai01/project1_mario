@@ -45,8 +45,7 @@ HEADERS += \
     normalbricks.h \
     boxbricks.h
 
-FORMS += \
-    mainwindow.ui
+
 
 TRANSLATIONS += \
     Mario_zh_TW.ts
