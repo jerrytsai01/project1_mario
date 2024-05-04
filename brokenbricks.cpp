@@ -13,7 +13,7 @@ brokenbricks::brokenbricks(int x,int y,QGraphicsPixmapItem *parent):QGraphicsPix
 
     QTimer *timer =new QTimer(this);
     connect(timer,&QTimer::timeout,this,&brokenbricks::bounce);
-    timer->start(10);
+    timer->start(7);
 }
 
 void brokenbricks::bounce(){
@@ -27,15 +27,15 @@ void brokenbricks::bounce(){
                 qreal itemx = itemPos.x();
                 qreal itemy = itemPos.y();
                 qDebug()<<itemy;
-                if(itemx+itemw>=x and itemx<=x+50 and itemy <=y+50 and itemy >= y+46){
-                    DeathTime++;
-                    if(DeathTime > 3){
+                if(itemx+itemw>=x and itemx<=x+50 and itemy <=y+50 and itemy >= y+47){
+                    //DeathTime++;
+                    //if(DeathTime > 3){
                     // delete
                     // mario::collidedTop=true;
                     scene()->removeItem(this);
                     delete this;
                     return;
-                    }
+                    //}
                 }
             }
         }

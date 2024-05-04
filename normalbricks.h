@@ -1,11 +1,30 @@
 #ifndef NORMALBRICKS_H
 #define NORMALBRICKS_H
 #include <QGraphicsPixmapItem>
+#include <QObject>
+#include "coin.h"
 
 class normalbricks: public QObject, public QGraphicsPixmapItem
 {
+    Q_OBJECT
 public:
-    normalbricks(int x,int y,QGraphicsPixmapItem *parent=0);
+    normalbricks(int x,int y,int coinsum,QGraphicsPixmapItem *parent=0);
+
+
+signals:
+    void jump();
+
+
+private slots:
+    void touch();
+    void bounce();
+    void getcoin();
+
+private :
+     int x;
+     int y;
+     int coinsum;
+
 };
 
 #endif // NORMALBRICKS_H

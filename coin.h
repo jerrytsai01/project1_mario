@@ -12,6 +12,7 @@ public:
     static int score;
     static QLabel *scorelabel;
 
+
 signals:
     void collected();
 private slots:

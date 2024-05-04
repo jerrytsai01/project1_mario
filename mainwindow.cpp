@@ -62,7 +62,7 @@ MainWindow::MainWindow(QWidget *parent)
     mario::hp=3;
     QLabel *hpLabel = new QLabel("HP: 3",view);
     hpLabel->setStyleSheet("QLabel { color : red; font-size: 45px; }");
-    hpLabel->move(200,0);
+    hpLabel->move(400,0);
     mario::hplabel=hpLabel;
 
     //create toxic mushroom
@@ -87,12 +87,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     //score and coin
     Coin::score = 0;
-    QLabel *scoreLabel = new QLabel("Score: 0", view);
+    QLabel *scoreLabel = new QLabel("Score: 00", view);
     scoreLabel->setStyleSheet("QLabel { color : red; font-size: 45px; }");
     scoreLabel->move(0,0);
     Coin::scorelabel = scoreLabel;
     for(int i=1;i<10;i++){
-        Coin *coin = new Coin(200*i,400);
+        Coin *coin = new Coin(200*i,200);
         scene->addItem(coin);
     }
 
@@ -128,7 +128,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     //brokenrock
     std::vector<std::vector<int>> brokenbrickpos={
-        {9*w,7*h},{8*w,7*h},{9*w,6*h},{8*w,6*h}  //stone position
+        {9*w,7*h},{8*w,7*h}  //stone position
     };
     for (size_t i = 0; i < brokenbrickpos.size(); i ++) {
         int x = brokenbrickpos[i][0];
@@ -136,6 +136,19 @@ MainWindow::MainWindow(QWidget *parent)
         brokenbricks *brokenbrick = new brokenbricks(x, y);
         scene->addItem(brokenbrick);
     }
+
+    //normalbricks
+    std::vector<std::vector<int>> normalbrickpos={
+        {5*w,7*h},{6*w,7*h}  //stone position
+    };
+    for (size_t i = 0; i < normalbrickpos.size(); i ++) {
+        int x = normalbrickpos[i][0];
+        int y = normalbrickpos[i][1];
+        normalbricks *normalbrick = new normalbricks(x, y,30);
+
+        scene->addItem(normalbrick);
+    }
+
 
     // 將視圖設置為主視窗的中央窗口
     setCentralWidget(view);

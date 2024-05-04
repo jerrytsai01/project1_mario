@@ -321,7 +321,7 @@ void mario::colliedWithFloorBrick()
                 }
             }
         }
-        if(typeid(*item) == typeid(stonebricks) or typeid(*item) == typeid(brokenbricks)){
+        if(typeid(*item) == typeid(stonebricks) or typeid(*item) == typeid(brokenbricks)or typeid(*item) == typeid(normalbricks)){
             //qDebug() << "collided stone brick";
             //qDebug() << "size: x from" << item->x()-25 << " to " << item->x()+25 << ";y from" << item->y()-25 << " to " << item->y()+25;
             //qDebug() <<"mario x" <<x()<<" y "<<y();

@@ -20,12 +20,12 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     mario.cpp \
-    normalbricks.cpp \
     stonebricks.cpp \
     supermushroom.cpp \
     toxicmushroom.cpp \
     waterpipe.cpp \
-    coin.cpp
+    coin.cpp \
+    normalbricks.cpp
 
 HEADERS += \
     boxbricks.h \
@@ -38,12 +38,12 @@ HEADERS += \
     loginwindow.h \
     mainwindow.h \
     mario.h \
-    normalbricks.h \
     stonebricks.h \
     supermushroom.h \
     toxicmushroom.h \
     waterpipe.h \
-    coin.h
+    coin.h \
+    normalbricks.h
 
 FORMS += \
     mainwindow.ui
