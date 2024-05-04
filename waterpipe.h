@@ -7,8 +7,11 @@
 class waterpipe: public QObject, public QGraphicsPixmapItem{
     Q_OBJECT
 public:
-    waterpipe(QGraphicsPixmapItem *parent = 0);
+    waterpipe(int x,int y,QGraphicsPixmapItem *parent = 0);
     void readview(QGraphicsView *view);
+private:
+    int x;
+    int y;
 };
 
 #endif // WATERPIPE_H

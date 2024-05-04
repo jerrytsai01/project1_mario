@@ -65,21 +65,35 @@ MainWindow::MainWindow(QWidget *parent)
     hpLabel->move(400,0);
     mario::hplabel=hpLabel;
 
+
+    // brick's height and weight
+    const int w= 50;
+    const int h = 50;
+
     //create toxic mushroom
-    toxicmushroom *mushroom1 = new toxicmushroom();
-    scene->addItem(mushroom1);
+    std::vector<std::vector<int>> mushroompos={
+        //position
+        {16*w,9*h}
+    };
+    for (size_t i = 0; i < mushroompos.size(); i ++) {
+        int x = mushroompos[i][0];
+        int y = mushroompos[i][1];
+        toxicmushroom *mushroom = new toxicmushroom(x, y);
+        scene->addItem(mushroom);
+    }
 
-    //create super mushroom
-    supermushroom *supermushroom1 = new supermushroom();
-    scene->addItem(supermushroom1);
 
-    //create fire flower
-    fireflower *fireflower1 = new fireflower();
-    scene->addItem(fireflower1);
-
-    //create waterpipe
-    waterpipe *waterpipe1 = new waterpipe();
-    scene->addItem(waterpipe1);
+    //create waterpipe  high70
+    std::vector<std::vector<int>> pipepos={
+        //position
+        {14*w,9*h-20}
+    };
+    for (size_t i = 0; i < pipepos.size(); i ++) {
+        int x = pipepos[i][0];
+        int y = pipepos[i][1];
+        waterpipe *pipe = new waterpipe(x, y);
+        scene->addItem(pipe);
+    }
 
     //creat final flag
     flag_pole *flagPole = new flag_pole();
@@ -101,7 +115,9 @@ MainWindow::MainWindow(QWidget *parent)
     const int floorbrickWidth = 50;
     const int numBricks = 7000 / floorbrickWidth;
     for (int i = 0; i < numBricks; ++i) {
-        if(((i>=11)&&(i<=12)) || ((i>=35)&&(i<=45)) || ((i>=65)&&(i<=75))){
+        if(//floor hole postition
+                /*((i>=11)&&(i<=11)) || ((i>=35)&&(i<=45)) || ((i>=65)&&(i<=75))*/
+           0){
             continue;
         }
         else
@@ -111,13 +127,11 @@ MainWindow::MainWindow(QWidget *parent)
         }
     }
 
-    // brick's height and weight
-    const int w= 50;
-    const int h = 50;
-
     //stone建構
     std::vector<std::vector<int>> stonebrickpos={
-        {10*w,7*h},{11*w,7*h},{136*w,9*h}  //stone position
+        //stone position
+        {10*w,7*h},{11*w,7*h},
+        {136*w,9*h}  //flag brick position
     };
     for (size_t i = 0; i < stonebrickpos.size(); i ++) {
         int x = stonebrickpos[i][0];
@@ -128,7 +142,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     //brokenrock
     std::vector<std::vector<int>> brokenbrickpos={
-        {9*w,7*h},{8*w,7*h}  //stone position
+        //brick position
+        {9*w,7*h},{8*w,7*h}
     };
     for (size_t i = 0; i < brokenbrickpos.size(); i ++) {
         int x = brokenbrickpos[i][0];
@@ -139,16 +154,28 @@ MainWindow::MainWindow(QWidget *parent)
 
     //normalbricks
     std::vector<std::vector<int>> normalbrickpos={
-        {5*w,7*h},{6*w,7*h}  //stone position
+        //brick position
+        {5*w,7*h},{6*w,7*h}
     };
     for (size_t i = 0; i < normalbrickpos.size(); i ++) {
         int x = normalbrickpos[i][0];
         int y = normalbrickpos[i][1];
-        normalbricks *normalbrick = new normalbricks(x, y,30);
+        normalbricks *normalbrick = new normalbricks(x, y,30/*coins*/);
 
         scene->addItem(normalbrick);
     }
 
+    //boxbricks
+    std::vector<std::vector<int>> boxbrickpos={
+        //brick position
+        {10*w,7*h},{11*w,7*h}
+    };
+    for (size_t i = 0; i < boxbrickpos.size(); i ++) {
+        int x = boxbrickpos[i][0];
+        int y = boxbrickpos[i][1];
+        boxbricks *boxbrick = new boxbricks(x, y,3/*1for coin 2for mushroom 3for flower*/);
+        scene->addItem(boxbrick);
+    }
 
     // 將視圖設置為主視窗的中央窗口
     setCentralWidget(view);

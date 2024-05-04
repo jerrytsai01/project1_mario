@@ -9,8 +9,8 @@
 #include <QGraphicsScene>
 #include <QList>
 
-waterpipe::waterpipe(QGraphicsPixmapItem *parent):QGraphicsPixmapItem (parent)
+waterpipe::waterpipe(int x,int y,QGraphicsPixmapItem *parent):QGraphicsPixmapItem (parent),x(x),y(y)
 {
     setPixmap(QPixmap(":/new/prefix1/image/brick/water pipe.png"));
-    setPos(300,400);
+    setPos(x,y);
 }

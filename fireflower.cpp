@@ -10,10 +10,10 @@
 #include <QGraphicsScene>
 #include <QList>
 
-fireflower::fireflower(QGraphicsPixmapItem *parent):QGraphicsPixmapItem (parent)
+fireflower::fireflower(int x,int y,QGraphicsPixmapItem *parent):QGraphicsPixmapItem (parent),x(x),y(y)
 {
     setPixmap(QPixmap(":/new/prefix1/image/item/Fire Flower.png"));
-    setPos(700,300);
+    setPos(x,y);
     QTimer*timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(flower_eaten_by_mario()));
     timer->start(10);

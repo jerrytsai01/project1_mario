@@ -8,9 +8,12 @@
 class fireflower: public QObject, public QGraphicsPixmapItem{
     Q_OBJECT
 public:
-    fireflower(QGraphicsPixmapItem *parent = 0);
+    fireflower(int x,int y,QGraphicsPixmapItem *parent = 0);
     void readview(QGraphicsView *view);
 public slots:
     void flower_eaten_by_mario();
+private:
+    int x;
+    int y;
 };
 #endif // FIREFLOWER_H

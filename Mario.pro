@@ -9,7 +9,6 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    boxbricks.cpp \
     brokenbricks.cpp \
     bullet.cpp \
     fireflower.cpp \
@@ -25,10 +24,10 @@ SOURCES += \
     toxicmushroom.cpp \
     waterpipe.cpp \
     coin.cpp \
-    normalbricks.cpp
+    normalbricks.cpp \
+    boxbricks.cpp
 
 HEADERS += \
-    boxbricks.h \
     brokenbricks.h \
     bullet.h \
     fireflower.h \
@@ -43,7 +42,8 @@ HEADERS += \
     toxicmushroom.h \
     waterpipe.h \
     coin.h \
-    normalbricks.h
+    normalbricks.h \
+    boxbricks.h
 
 FORMS += \
     mainwindow.ui
