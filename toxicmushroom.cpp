@@ -79,7 +79,7 @@ void toxicmushroom::colliedWithMario(){
             //qDebug() << "size: x from" << item->x()-25 << " to " << item->x()+25 << ";y from" << item->y()-50 << " to " << item->y()+50;
             //qDebug() << "toxicmushroom x" <<x()<<" y "<<y();
             //if(MainWindow::player.small == true)
-            if((item->y() < y) && (x < item->x()+25) && (x > item->x()-25)){
+            if(y-45 >= item->y() and (item->x() >= x-50) and (item->x() <= x+50)){
                 live = false;
             }
         }

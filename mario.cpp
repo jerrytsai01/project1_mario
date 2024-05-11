@@ -24,6 +24,7 @@
 #include <QList>
 #include <typeinfo>
 
+QPointF mario::colliedTopOBJ = QPointF(0, 0);
 int mario::hp = 3;
 QLabel *mario::hplabel=nullptr;
 mario::mario(QGraphicsPixmapItem *parent):QGraphicsPixmapItem (parent)
@@ -31,7 +32,7 @@ mario::mario(QGraphicsPixmapItem *parent):QGraphicsPixmapItem (parent)
     setFlag(QGraphicsItem::ItemIsFocusable);
     setFlag(QGraphicsItem::ItemIsSelectable);
     //初始位置跟圖片
-    setPos(6500,400);
+    setPos(0,400);
     setPixmap(QPixmap(":/new/prefix1/image/Mario_small/s_mario_stand_R.png"));
 
     //持續偵測的計時
@@ -171,6 +172,7 @@ void mario::countY(){
             velocity = 0;
             Vg = 0;
             Vc = 0;
+            colliedTopOBJ = {0,0};
             //qDebug() << "from " << BottomY << " to " << TopY << " high " << BottomY - TopY;
             //qDebug() <<"Vc:" << Vc << "; Vg" << Vg << "; velocity:" << velocity;
             //qDebug() << "countY:collideBottom:" << collidedBottom <<"; collideTop:" <<collidedTop;
@@ -184,7 +186,7 @@ void mario::countY(){
 //change the skin of mario
 void mario::animation()
 {
-    qDebug() << pos();
+    //qDebug() << pos();
     if(!win){
         if(rightKey&&collidedBottom) {
             Rtimer++; // 增加計數器
@@ -275,12 +277,13 @@ void mario::colliedWithFloorBrick()
     for(int i =0;i<collidingItems.size();i++){
         QGraphicsItem *item = collidingItems[i];
         //if collided with block type
+        cTopTimer = 0;
         if(typeid(*item) == typeid(floorBricks)){
             //qDebug() << "collided floor brick";
             //qDebug() << "size: x from" << item->x()-25 << " to " << item->x()+25 << ";y from" << item->y()-50 << " to " << item->y()+50;
             //qDebug() <<"mario x" <<x()<<" y "<<y();
             if(small){
-                if((item->y() > y()) && (x() < item->x()+26) && (x() > item->x()-26)){
+                if((item->y() > y()) && (x() < item->x()+50) && (x() > item->x()-50)){
                     if(!upKey&&velocity!=0){
                         velocity = 0;
                         Vg = 0;
@@ -289,19 +292,19 @@ void mario::colliedWithFloorBrick()
                     BottomY = y();
                     collidedBottom = true;
                 }
-                else if((item->x() >= x()) && (y() > item->y()-48) && (y() < item->y()+50)){
+                else if((item->x() == x()+50) && (y()+50 >= item->y()) && (y() < item->y() + 100)){
                     setPos(x(),y()-0.1);
                     //qDebug() << "111111111111111";
                     collidedRight = true;
                 }
-                else if((item->x() <= x()) && (y() > item->y()-48) && (y() < item->y()+50)){
+                else if((item->x()+50 == x()) && (y()+50 >= item->y()) && (y() < item->y() + 100)){
                     setPos(x(),y()-0.1);
                     collidedLeft = true;
                 }
             }
             //big mario collide
             else{
-                if((item->y() > y()) && (x() < item->x()+28) && (x() > item->x()-28)){
+                if((item->y() > y()) && (x() < item->x()+50) && (x()+56 > item->x())){
                     if(!upKey&&velocity!=0){
                         velocity = 0;
                         Vg = 0;
@@ -310,23 +313,20 @@ void mario::colliedWithFloorBrick()
                     BottomY = y();
                     collidedBottom = true;
                 }
-                else if((item->x() >= x()) && (y() > item->y()-60) && (y() < item->y()+60)){
+                else if((item->x() == x()+56) && (y()+80 >= item->y()) && (y() < item->y() + 100)){
                     setPos(x(),y()-0.1);
                     //qDebug() << "111111111111111";
                     collidedRight = true;
                 }
-                else if((item->x() <= x()) && (y() > item->y()-68) && (y() < item->y()+68)){
+                else if((item->x()+50 <= x()) && (y()+80 >= item->y()) && (y() < item->y() + 100)){
                     setPos(x(),y()-0.1);
                     collidedLeft = true;
                 }
             }
         }
-        if(typeid(*item) == typeid(stonebricks) or typeid(*item) == typeid(brokenbricks)or typeid(*item) == typeid(normalbricks)){
-            //qDebug() << "collided stone brick";
-            //qDebug() << "size: x from" << item->x()-25 << " to " << item->x()+25 << ";y from" << item->y()-25 << " to " << item->y()+25;
-            //qDebug() <<"mario x" <<x()<<" y "<<y();
-            if(small){
-                if((item->y() > y()) && (x() < item->x()+40) && (x() > item->x()-40)){
+        if(typeid(*item) == typeid(stonebricks) or typeid(*item) == typeid(brokenbricks)or typeid(*item) == typeid(normalbricks) or typeid(*item) == typeid(boxbricks)){
+            if(small){//small collide -------------CHECK-------------
+                if((item->y() > y()) && (x() < item->x()+50) && (x()+50 > item->x())){
                     if(!upKey&&velocity!=0){
                         velocity = 0;
                         Vg = 0;
@@ -334,17 +334,26 @@ void mario::colliedWithFloorBrick()
                     }
                     collidedBottom = true;
                 }
-                if((item->y() < y()) && (x() < item->x()+40) && (x() > item->x()-40)){
+                else if((item->y() < y()) && (x() < item->x()+50) && (x()+50 > item->x())){
+                    colliedTopOBJ = item->pos(); //when collied Top, save the object's pos for the obj to recognize, reset in CountY when colliedBottom
                     collidedTop = true;
                     upKey = false;
                 }
-                if((item->x() > x()) && (y() > item->y()-25) && (y() < item->y()+25))
+                else if((item->x() == x()+50) && (y()+50 >= item->y()) && (y() <= item->y()+50))
+                {
                     collidedRight = true;
-                if((item->x() < x()) && (y() > item->y()-25) && (y() < item->y()+25))
+                    if((x() <= item->x()+50) && (x()+50 >= item->x())&&(y() < item->y()-10))
+                        setPos(x(),y()-0.1);
+                }
+                else if((item->x()+50 == x()) && (y()+50 >= item->y()) && (y() <= item->y()+50))
+                {
                     collidedLeft = true;
+                    if((x() <= item->x()+50) && (x()+50 >= item->x())&&(y() < item->y()-10))
+                        setPos(x(),y()-0.1);
+                }
             }
-            else{
-                if((item->y() > y()) && (x() < item->x()+40) && (x() > item->x()-40)){
+            else{//big collide -------------CHECK-------------
+                if((item->y() > y()) && (x() < item->x()+45) && (x() > item->x()-40)){
                     if(!upKey&&velocity!=0){
                         velocity = 0;
                         Vg = 0;
@@ -352,19 +361,31 @@ void mario::colliedWithFloorBrick()
                     }
                     collidedBottom = true;
                 }
-                if((item->y() < y()) && (x() < item->x()+40) && (x() > item->x()-40)){
+                else if((item->y() < y()) && (x() < item->x()+45) && (x() > item->x()-40)){
+                    qDebug() <<"collided top";
+                    colliedTopOBJ = item->pos();
                     collidedTop = true;
                     upKey = false;
                 }
-                if((item->x() > x()) && (y() > item->y()-68) && (y() < item->y()+68))
+                else if((item->x() >= x()) && (y() + 80 > item->y()) && (y() < item->y()+50)){
+                    qDebug() << "collided right";
                     collidedRight = true;
-                if((item->x() < x()) && (y() > item->y()-68) && (y() < item->y()+68))
+                    if((x() < item->x()+50) && (x() > item->x()-50) && y() <= item->y() - 75){
+                        setPos(x(),y()-0.1);
+                    }
+                }
+                else if((item->x() <= x()) && (y() + 80 > item->y()) && (y() < item->y()+50)){
+                    qDebug() << "collided left";
                     collidedLeft = true;
+                    if((x() < item->x()+50) && (x() > item->x()-50) && y() <= item->y() - 75){
+                        setPos(x(),y()-0.1);
+                    }
+                }
             }
         }
         if(typeid(*item) == typeid(waterpipe)){
-            if(small){
-                if((item->y() > y()) && (x() < item->x()+48) && (x() > item->x()-90)){
+            if(small){//(item->y() > y()) && (x() < item->x()+50) && (x()+50 > item->x())
+                if(item->y() >= y() && (x()  < item->x() + 90) && (x() + 45> item->x())){
                     if(!upKey&&velocity!=0){
                         velocity = 0;
                         Vg = 0;
@@ -372,19 +393,23 @@ void mario::colliedWithFloorBrick()
                     }
                     BottomY = y();
                     collidedBottom = true;
-                }
-                if((item->x() >= x()) && (y()+50 > item->y()) && (y() < item->y()+100)){
-                    setPos(x(),y()-0.2);
+                }//((item->x() == x()+50) && (y()+50 >= item->y()) && (y() <= item->y()+50))
+                else if((item->x() -50 >= x()) && (y()+50 >= item->y()) && (y() < item->y()+50)){
                     collidedRight = true;
+                    if((x() - 45 < item->x()) && (x() > item->x()-95) && y() <= item->y()){
+                        setPos(x(),y()-0.1);
+                    }
                 }
-                if((item->x() <= x()) && (y()+50 > item->y()) && (y() < item->y()+100)){
-                    setPos(x(),y()-0.2);
+                else if((item->x() < x()) && (y()+50 > item->y()) && (y() < item->y()+50)){
                     collidedLeft = true;
+                    if((x() - 45 < item->x()) && (x() > item->x()-95) && y() <= item->y()){
+                        setPos(x(),y()-0.1);
+                    }
                 }
             }
             //big mario collide
-            else{
-                if((item->y() > y()) && (x() < item->x()+56) && (x() > item->x()-100)){
+            else{//(item->y() > y()) && (x() < item->x()+45) && (x() > item->x()-40)
+                if((item->y() > y()) && (x() < item->x()+90) && (x() > item->x()-45)){
                     if(!upKey&&velocity!=0){
                         velocity = 0;
                         Vg = 0;
@@ -393,10 +418,11 @@ void mario::colliedWithFloorBrick()
                     BottomY = y();
                     collidedBottom = true;
                 }
-                else if((item->x() >= x()) && (y() > item->y()) && (y() < item->y()+100)){
+                else if((item->x() >= x()) && (y()+80 >= item->y()) && (y()+80 < item->y()+100)){
                     collidedRight = true;
                 }
-                else if((item->x() <= x()) && (y() > item->y()) && (y() < item->y()+100)){
+                else if((item->x() <= x()) && (y()+80 >= item->y()) && (y()+80 < item->y()+100)){
+                    qDebug() << "left";
                     collidedLeft = true;
                 }
             }
@@ -431,14 +457,23 @@ void mario::colliedWithMushroom(){
             //qDebug() << "collided toxicmushroom";
             //qDebug() << "size: x from" << item->x()-25 << " to " << item->x()+25 << ";y from" << item->y()-50 << " to " << item->y()+50;
             //qDebug() <<"mario x" <<x()<<" y "<<y();
-            if((item->y() > y()) && (x() < item->x()+25) && (x() > item->x()-25))
-                decreasedHP = true;
-            else if((item->x() < x()) && (y() > item->y()-48) && (y() < item->y()+48))
-                decreasedHP = true;
-            else if((item->x() > x()) && (y() > item->y()-48) && (y() < item->y()+48))
-                decreasedHP = true;
-            if(decreasedHP)
-                invincible = true;
+            if(small){
+                if((y()+45 <= item->y()) and (x() >= item->x() - 50) and (x()<= item->x()+50))
+                    invincible = true;
+                else
+                    decreasedHP = true;
+                if(decreasedHP)
+                    invincible = true;
+            }
+            else{
+                if((y()+70 <= item->y()) and (x() >= item->x() - 56) and (x()<= item->x()+50))
+                    invincible = true;
+                else{
+                    small = true;
+                    invincible = true;
+                    setPos(x()-20, y());
+                }
+            }
         }
         if(typeid(*item) == typeid (supermushroom)){
             setPos(x(), y()-10);

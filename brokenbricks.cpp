@@ -1,6 +1,6 @@
 #include "brokenbricks.h"
 #include "mario.h"
-#include<QTimer>
+#include <QTimer>
 #include <QList>
 #include <QtDebug>
 #include <QGraphicsPixmapItem>
@@ -17,26 +17,33 @@ brokenbricks::brokenbricks(int x,int y,QGraphicsPixmapItem *parent):QGraphicsPix
 }
 
 void brokenbricks::bounce(){
-    QList<QGraphicsItem*> collidingItems =scene()-> collidingItems(this, Qt::IntersectsItemBoundingRect);
-    for (int i =0;i<collidingItems.size();i++) {
-        QGraphicsItem *item = collidingItems[i];
-            if(typeid(*item) == typeid(mario)) {
-                QPointF itemPos = item->pos();
-                QRectF boundingRect = item->boundingRect();
-                qreal itemw = boundingRect.width();
-                qreal itemx = itemPos.x();
-                qreal itemy = itemPos.y();
-                qDebug()<<itemy;
-                if(itemx+itemw>=x and itemx<=x+50 and itemy <=y+50 and itemy >= y+47){
-                    //DeathTime++;
-                    //if(DeathTime > 3){
-                    // delete
-                    // mario::collidedTop=true;
-                    scene()->removeItem(this);
-                    delete this;
-                    return;
-                    //}
-                }
+    if(mario::colliedTopOBJ == this->pos()){
+        scene()->removeItem(this);
+        delete this;
+        return;
+    }
+}
+
+/*
+QList<QGraphicsItem*> collidingItems =scene()-> collidingItems(this, Qt::IntersectsItemBoundingRect);
+for (int i =0;i<collidingItems.size();i++) {
+    QGraphicsItem *item = collidingItems[i];
+        if(typeid(*item) == typeid(mario)) {
+            QPointF itemPos = item->pos();
+            QRectF boundingRect = item->boundingRect();
+            qreal itemw = boundingRect.width();
+            qreal itemx = itemPos.x();
+            qreal itemy = itemPos.y();
+            qDebug()<<itemy;
+            if(itemx+itemw>=x and itemx<=x+50 and itemy <=y+50 and itemy >= y+47){
+                //DeathTime++;
+                //if(DeathTime > 3){
+                // delete
+                // mario::collidedTop=true;
+                scene()->removeItem(this);
+                delete this;
+                return;
+                //}
             }
         }
-}
+    }*/

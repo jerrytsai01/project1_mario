@@ -19,24 +19,28 @@ boxbricks::boxbricks(int x,int y,int item,QGraphicsPixmapItem *parent):QGraphics
 }
 
 void boxbricks::touch(){
-    QList<QGraphicsItem*> collidingItems =scene()-> collidingItems(this, Qt::IntersectsItemBoundingRect);
-    for (int i =0;i<collidingItems.size();i++) {
-        QGraphicsItem *item = collidingItems[i];
-            if(typeid(*item) == typeid(mario)) {
-                QPointF itemPos = item->pos();
-                QRectF boundingRect = item->boundingRect();
-                qreal itemw = boundingRect.width();
-                qreal itemx = itemPos.x();
-                qreal itemy = itemPos.y();
-                if(itemx+itemw>=x and itemx<=x+50 and itemy <=y+50 and itemy >= y+47 and hit==0){
-                    emit touched();
-                    hit=1;
-                    setPixmap(QPixmap(":/new/prefix1/image/brick/stone brick.png"));
-                }
+    if(mario::colliedTopOBJ == this->pos()){
+        emit touched();
+        hit=1;
+        setPixmap(QPixmap(":/new/prefix1/image/brick/stone brick.png"));
+    }
+}
+/*QList<QGraphicsItem*> collidingItems =scene()-> collidingItems(this, Qt::IntersectsItemBoundingRect);
+for (int i =0;i<collidingItems.size();i++) {
+    QGraphicsItem *item = collidingItems[i];
+        if(typeid(*item) == typeid(mario)) {
+            QPointF itemPos = item->pos();
+            QRectF boundingRect = item->boundingRect();
+            qreal itemw = boundingRect.width();
+            qreal itemx = itemPos.x();
+            qreal itemy = itemPos.y();
+            if(itemx+itemw>=x and itemx<=x+50 and itemy <=y+50 and itemy >= y+47 and hit==0){
+                emit touched();
+                hit=1;
+                setPixmap(QPixmap(":/new/prefix1/image/brick/stone brick.png"));
             }
         }
-}
-
+    }*/
 void boxbricks::obj(){
     //coin
     if(item==1){

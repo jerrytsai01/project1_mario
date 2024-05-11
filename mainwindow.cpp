@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 #include "mario.h"
 #include "floorbricks.h"
 #include "stonebricks.h"
@@ -86,7 +85,7 @@ MainWindow::MainWindow(QWidget *parent)
     //create waterpipe  high70
     std::vector<std::vector<int>> pipepos={
         //position
-        {14*w,9*h-20}
+        {3*w,9*h-20}
     };
     for (size_t i = 0; i < pipepos.size(); i ++) {
         int x = pipepos[i][0];
@@ -116,7 +115,7 @@ MainWindow::MainWindow(QWidget *parent)
     const int numBricks = 7000 / floorbrickWidth;
     for (int i = 0; i < numBricks; ++i) {
         if(//floor hole postition
-                /*((i>=11)&&(i<=11)) || ((i>=35)&&(i<=45)) || ((i>=65)&&(i<=75))*/
+                /*((i>=6)&&(i<=7)) || ((i>=35)&&(i<=45)) || ((i>=65)&&(i<=75))*/
            0){
             continue;
         }
@@ -130,8 +129,10 @@ MainWindow::MainWindow(QWidget *parent)
     //stone建構
     std::vector<std::vector<int>> stonebrickpos={
         //stone position
+        /*
         {10*w,7*h},{11*w,7*h},
         {136*w,9*h}  //flag brick position
+        */
     };
     for (size_t i = 0; i < stonebrickpos.size(); i ++) {
         int x = stonebrickpos[i][0];
@@ -155,7 +156,7 @@ MainWindow::MainWindow(QWidget *parent)
     //normalbricks
     std::vector<std::vector<int>> normalbrickpos={
         //brick position
-        {5*w,7*h},{6*w,7*h}
+        {4*w,7*h},{5*w,7*h},{2*w,9*h}
     };
     for (size_t i = 0; i < normalbrickpos.size(); i ++) {
         int x = normalbrickpos[i][0];
@@ -179,15 +180,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     // 將視圖設置為主視窗的中央窗口
     setCentralWidget(view);
-    /*// 创建定时器对象
-                QTimer *timer = new QTimer(this);
-                // 连接定时器的 timeout() 信号到 lockview() 槽函数
-                connect(timer, &QTimer::timeout, this, [=]() {
-                    player->lockview(view);
-                });ss
-                // 设置定时器的间隔时间，单位为毫秒
-                int interval = 1; // 设置为 100 毫秒，即每隔 100 毫秒调用一次 lockview() 函数
-                timer->start(interval);*/
 
     // find max z value and assign to mario
     QList<QGraphicsItem*> items = scene->items();
@@ -199,6 +191,9 @@ MainWindow::MainWindow(QWidget *parent)
         }
     }
     player->setZValue(maxZValue);
+
+    QTimer*colTimer = new QTimer(this);
+    connect(colTimer, SIGNAL(timeout()), this, SLOT(player->coll));
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event) {

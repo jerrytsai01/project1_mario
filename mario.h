@@ -24,6 +24,7 @@ public:
     bool collidedTop;
     bool fire = false, small = false;
     flag *Flag;
+    static QPointF colliedTopOBJ;
 public slots:
     void checkKeyState();
     void gravity();
@@ -42,7 +43,7 @@ private:
     bool rightKey = false, leftKey = false,
          upKey = false, faceRight = true, reachTop = false;
     bool collidedBottom = true ,collidedLeft = false, collidedRight = false;
-    int Rtimer = 0, Ltimer = 0, UPtimer = 0;
+    int Rtimer = 0, Ltimer = 0, UPtimer = 0, cTopTimer = 0;
     double velocity = 0, Vc = 0, Vg = 0;
     bool increasedHP = false, decreasedHP = false;
     bool invincible = false;

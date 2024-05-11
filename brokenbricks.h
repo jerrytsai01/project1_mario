@@ -9,7 +9,6 @@ public:
 
 private slots:
     void bounce();
-
 private :
     int x;
     int y;

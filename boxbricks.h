@@ -11,7 +11,6 @@ public:
 
 signals:
     void touched();
-
 private slots:
     void touch();
     void obj();
