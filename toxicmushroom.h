@@ -8,7 +8,7 @@
 class toxicmushroom: public QObject, public QGraphicsPixmapItem{
     Q_OBJECT
 public :
-    toxicmushroom(int x,int y,QGraphicsPixmapItem *parent=0);
+    toxicmushroom(int X,int Y,QGraphicsPixmapItem *parent=0);
     void readview(QGraphicsView *view);
 public slots:
     void livecheck();
@@ -26,8 +26,6 @@ private :
     int timer = 0, deathTimer = 0;
     bool live = true;
     QGraphicsView *view;
-    int x;
-    int y;
 };
 
 

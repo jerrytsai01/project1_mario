@@ -7,7 +7,7 @@
 class supermushroom: public QObject, public QGraphicsPixmapItem{
     Q_OBJECT
 public:
-    supermushroom(int x,int y,QGraphicsPixmapItem *parent = 0);
+    supermushroom(int X,int Y,QGraphicsPixmapItem *parent = 0);
     void readview(QGraphicsView *view);
 public slots:
     void eaten_by_mario();
@@ -17,11 +17,9 @@ public slots:
     void collidedWithBrick();
 private:
     bool collidedBottom = false, collidedLeft = false, collidedRight = false, collidedTop = false;
-    bool faceRight = false;
+    bool faceRight = true;
     double Vg = 0, acceleration;
     int Deathtime = 0;
-    int x;
-    int y;
 };
 
 #endif // SUPERMUSHROOM_H

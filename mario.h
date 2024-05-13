@@ -19,10 +19,10 @@ public:
     void readview(QGraphicsView *view);
     static int hp ;
     static QLabel *hplabel;
-    int score = 0, fireBall = 100, faliure = 0;
+    int score = 0, fireBall = 0, faliure = 0;
     bool marioIsDead = false, win = false;
     bool collidedTop;
-    bool fire = false, small = false;
+    bool fire = false, small = true;
     flag *Flag;
     static QPointF colliedTopOBJ;
 public slots:

@@ -45,8 +45,6 @@ mario::mario(QGraphicsPixmapItem *parent):QGraphicsPixmapItem (parent)
     connect(timer, SIGNAL(timeout()), this, SLOT(marioDead()));
     connect(timer, SIGNAL(timeout()), this, SLOT(colliedWithMushroom()));
     connect(timer, SIGNAL(timeout()), this, SLOT(eatFireflower()));
-    //connect(timer, SIGNAL(timeout()), this, SLOT(shooting()));
-   //connect(timer, SIGNAL(timeout()), this, SLOT(Shooterform()));
     connect(timer, SIGNAL(timeout()), this, SLOT(HP()));
     connect(timer, SIGNAL(timeout()), this, SLOT(winEvent()));
     timer->start(10);
@@ -273,6 +271,7 @@ void mario::colliedWithFloorBrick()
     collidedRight = false;
     collidedLeft = false;
     collidedTop = false;
+    qDebug() << endl <<endl <<endl<<endl;
     QList<QGraphicsItem*> collidingItems =scene()-> collidingItems(this, Qt::IntersectsItemBoundingRect);
     for(int i =0;i<collidingItems.size();i++){
         QGraphicsItem *item = collidingItems[i];
@@ -293,11 +292,12 @@ void mario::colliedWithFloorBrick()
                     collidedBottom = true;
                 }
                 else if((item->x() == x()+50) && (y()+50 >= item->y()) && (y() < item->y() + 100)){
+                    qDebug() << "collided right";
                     setPos(x(),y()-0.1);
-                    //qDebug() << "111111111111111";
                     collidedRight = true;
                 }
                 else if((item->x()+50 == x()) && (y()+50 >= item->y()) && (y() < item->y() + 100)){
+                    qDebug() << "collided left";
                     setPos(x(),y()-0.1);
                     collidedLeft = true;
                 }
@@ -313,12 +313,13 @@ void mario::colliedWithFloorBrick()
                     BottomY = y();
                     collidedBottom = true;
                 }
-                else if((item->x() == x()+56) && (y()+80 >= item->y()) && (y() < item->y() + 100)){
+                else if((item->x() == x()+56) && (y()+ 79 >= item->y()) && (y() < item->y() + 100)){
+                    qDebug() << "collided right";
                     setPos(x(),y()-0.1);
-                    //qDebug() << "111111111111111";
                     collidedRight = true;
                 }
-                else if((item->x()+50 <= x()) && (y()+80 >= item->y()) && (y() < item->y() + 100)){
+                else if((item->x()+50 <= x()) && (y()+ 79 >= item->y()) && (y() < item->y() + 100)){
+                    qDebug() << "collided left";
                     setPos(x(),y()-0.1);
                     collidedLeft = true;
                 }
@@ -341,12 +342,14 @@ void mario::colliedWithFloorBrick()
                 }
                 else if((item->x() == x()+50) && (y()+50 >= item->y()) && (y() <= item->y()+50))
                 {
+                    qDebug() << "collided right";
                     collidedRight = true;
                     if((x() <= item->x()+50) && (x()+50 >= item->x())&&(y() < item->y()-10))
                         setPos(x(),y()-0.1);
                 }
                 else if((item->x()+50 == x()) && (y()+50 >= item->y()) && (y() <= item->y()+50))
                 {
+                    qDebug() << "collided left";
                     collidedLeft = true;
                     if((x() <= item->x()+50) && (x()+50 >= item->x())&&(y() < item->y()-10))
                         setPos(x(),y()-0.1);
@@ -367,17 +370,18 @@ void mario::colliedWithFloorBrick()
                     collidedTop = true;
                     upKey = false;
                 }
-                else if((item->x() >= x()) && (y() + 80 > item->y()) && (y() < item->y()+50)){
-                    qDebug() << "collided right";
+                else if((item->x() -50>= x()) && (y() + 79 > item->y()) && (y() < item->y() + 50)){
+                    qDebug() << pos()<<"collided right"<< item->pos();
                     collidedRight = true;
-                    if((x() < item->x()+50) && (x() > item->x()-50) && y() <= item->y() - 75){
+                    if((x() <= item->x()+50) && (x() >= item->x()-50) && y() <= item->y() - 75){
+                        qDebug() << "==" ;
                         setPos(x(),y()-0.1);
                     }
                 }
-                else if((item->x() <= x()) && (y() + 80 > item->y()) && (y() < item->y()+50)){
+                else if((item->x() <= x()) && (y() + 79 > item->y()) && (y() < item->y() + 50)){
                     qDebug() << "collided left";
                     collidedLeft = true;
-                    if((x() < item->x()+50) && (x() > item->x()-50) && y() <= item->y() - 75){
+                    if((x() <= item->x()+50) && (x() >= item->x()-50) && y() <= item->y() - 75){
                         setPos(x(),y()-0.1);
                     }
                 }
@@ -395,12 +399,14 @@ void mario::colliedWithFloorBrick()
                     collidedBottom = true;
                 }//((item->x() == x()+50) && (y()+50 >= item->y()) && (y() <= item->y()+50))
                 else if((item->x() -50 >= x()) && (y()+50 >= item->y()) && (y() < item->y()+50)){
+                    qDebug() << "collided right";
                     collidedRight = true;
                     if((x() - 45 < item->x()) && (x() > item->x()-95) && y() <= item->y()){
                         setPos(x(),y()-0.1);
                     }
                 }
                 else if((item->x() < x()) && (y()+50 > item->y()) && (y() < item->y()+50)){
+                    qDebug() << "collided left";
                     collidedLeft = true;
                     if((x() - 45 < item->x()) && (x() > item->x()-95) && y() <= item->y()){
                         setPos(x(),y()-0.1);
@@ -419,10 +425,11 @@ void mario::colliedWithFloorBrick()
                     collidedBottom = true;
                 }
                 else if((item->x() >= x()) && (y()+80 >= item->y()) && (y()+80 < item->y()+100)){
+                    qDebug() << "collided right";
                     collidedRight = true;
                 }
                 else if((item->x() <= x()) && (y()+80 >= item->y()) && (y()+80 < item->y()+100)){
-                    qDebug() << "left";
+                    qDebug() << "collided left";
                     collidedLeft = true;
                 }
             }

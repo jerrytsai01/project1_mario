@@ -73,6 +73,7 @@ MainWindow::MainWindow(QWidget *parent)
     std::vector<std::vector<int>> mushroompos={
         //position
         {80*w,9*h},{98*w,9*h},{99*w,9*h},{100*w,9*h}
+        ,{6*w, 9*h}
     };
     for (size_t i = 0; i < mushroompos.size(); i ++) {
         int x = mushroompos[i][0];
@@ -86,6 +87,7 @@ MainWindow::MainWindow(QWidget *parent)
     std::vector<std::vector<int>> pipepos={
         //position
         {33*w,9*h-20},{64*w,9*h-20},{68*w,9*h-20},{88*w,9*h-20}
+        /*,{4*w,9*h-20},{9*w, 9*h-20}*/
     };
     for (size_t i = 0; i < pipepos.size(); i ++) {
         int x = pipepos[i][0];
@@ -170,8 +172,9 @@ MainWindow::MainWindow(QWidget *parent)
     //normalbricks
     std::vector<std::vector<int>> normalbrickpos={
         //brick position
-        {11*w,3*h},{117*w,5*h},{10*w,7*h},{11*w,7*h},{12*w,7*h},{27*w,7*h},{29*w,7*h}
+        {117*w,5*h},{10*w,7*h},{12*w,7*h},{27*w,7*h},{29*w,7*h}
         ,{74*w,5*h},{75*w,7*h},{76*w,5*h},{73*w,8*h},{74*w,8*h},{76*w,8*h},{77*w,8*h},{78*w,8*h},{72*w,8*h},{78*w,9*h},{72*w,9*h}
+        ,{4*w, 9*h}, {9*w, 9*h}
     };
     for (size_t i = 0; i < normalbrickpos.size(); i ++) {
         int x = normalbrickpos[i][0];
@@ -189,7 +192,7 @@ MainWindow::MainWindow(QWidget *parent)
     //boxbricks
     std::vector<std::vector<int>> boxbrickpos={
         //brick position
-        {28*w,7*h},{75*w,5*h},{75*w,2*h}
+        {28*w,7*h},{75*w,5*h},{11*w,4*h},{75*w,2*h},{11*w,7*h}
     };
     for (size_t i = 0; i < boxbrickpos.size(); i ++) {
         int x = boxbrickpos[i][0];

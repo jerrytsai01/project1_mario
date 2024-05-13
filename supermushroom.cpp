@@ -14,10 +14,10 @@
 #include <QGraphicsItem>
 #include <QList>
 
-supermushroom::supermushroom(int x,int y,QGraphicsPixmapItem *parent):QGraphicsPixmapItem (parent),x(x),y(y)
+supermushroom::supermushroom(int X,int Y,QGraphicsPixmapItem *parent):QGraphicsPixmapItem (parent)
 {
     setPixmap(QPixmap(":/new/prefix1/image/item/super mushroom.png"));
-    setPos(x,y);
+    setPos(X,Y);
     QTimer*timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(supermushroom_move()));
     connect(timer, SIGNAL(timeout()), this, SLOT(eaten_by_mario()));
@@ -28,10 +28,13 @@ supermushroom::supermushroom(int x,int y,QGraphicsPixmapItem *parent):QGraphicsP
 }
 
 void supermushroom::supermushroom_move(){
-    if(faceRight)
-        setPos(x+1, y+Vg);
-    else
-        setPos(x-1, y+Vg);
+    qDebug()<<"move";
+    if(faceRight){
+        setPos(x()+1, y());
+    }
+    else{
+        setPos(x()-1, y());
+    }
 }
 
 //被馬力歐吃
@@ -64,7 +67,7 @@ void supermushroom::countY(){
         collidedBottom = true;
         Vg = 0;
     }
-    setPos(x, y+Vg);
+    setPos(x(), y()+Vg);
 }
 
 void supermushroom::collidedWithBrick(){
@@ -76,55 +79,53 @@ void supermushroom::collidedWithBrick(){
     for(int i =0;i<collidingItems.size();i++){
         QGraphicsItem *item = collidingItems[i];
         if(typeid(*item) == typeid(floorBricks)){
-            if((item->y() > y) && (x < item->x()+26) && (x > item->x()-26)){
+            if((item->y() > y()) && (x() < item->x()+26) && (x() > item->x()-26)){
                 Vg = 0;
                 collidedBottom = true;
                 //qDebug() << "1";
             }
-            else if((item->x() > x) && (y > item->y()-48) && (y < item->y()+48)){
+            else if((item->x() > x()) && (y() > item->y()-48) && (y() < item->y()+48)){
                 //qDebug() << "111111111111111";
-                setPos(x,y-0.2);
+                qDebug() << "CR";
                 collidedRight = true;
                 faceRight = false;
                 //qDebug() << "2";
             }
-            else if((item->x() < x) && (y > item->y()-48) && (y < item->y()+48)){
-                setPos(x,y-0.2);
+            else if((item->x() < x()) && (y() > item->y()-48) && (y() < item->y()+48)){
+                qDebug() << "CL";
                 collidedLeft = true;
                 faceRight = true;
                 //qDebug() << "3";
             }
         }
         if(typeid(*item) == typeid(waterpipe)){
-            if((item->y() > y) && (x < item->x()) && (x > item->x()-100)){
+            if((item->y() > y()) && (x() < item->x()) && (x() > item->x()-100)){
                 Vg = 0;
                 collidedBottom = true;
             }
-            else if((item->x() > x) && (y > item->y()) && (y < item->y()+100)){
+            else if((item->x() > x()) && (y() > item->y()) && (y() < item->y()+100)){
                 qDebug() << "111111111111111";
-                setPos(x,y-0.2);
                 collidedRight = true;
                 faceRight = false;
             }
-            else if((item->x() < x) && (y > item->y()) && (y < item->y()+100)){
-                setPos(x,y-0.2);
+            else if((item->x() < x()) && (y() > item->y()) && (y() < item->y()+100)){
                 collidedLeft = true;
                 faceRight = true;
             }
         }
         if((typeid(*item) == typeid(stonebricks)) || (typeid(*item) == typeid(normalbricks)) || (typeid(*item) == typeid(boxbricks)) || (typeid(*item) == typeid(brokenbricks))){
-            if((item->y() > y) && (x < item->x()+25) && (x > item->x()-25)){
+            //(item->y() < y()) && (x() < item->x()+45) && (x() > item->x()-40)
+            if((item->y() > y()) && (x() < item->x()+45) && (x() > item->x()-45)){
                 Vg = 0;
                 collidedBottom = true;
             }
-            else if((item->x() > x) && (y > item->y()-25) && (y < item->y()+25)){
-                //qDebug() << "111111111111111";
-                setPos(x,y-0.2);
+            else if((item->x() - 50 >= x()) && (y() + 45 > item->y()) && (y() < item->y() + 45)){
+                qDebug() << "CR";
                 collidedRight = true;
                 faceRight = false;
             }
-            else if((item->x() < x) && (y > item->y()-25) && (y < item->y()+25)){
-                setPos(x,y-0.2);
+            else if((item->x() < x()) && (y() + 45 > item->y()) && (y() < item->y() + 45)){
+                qDebug() << "CL";
                 collidedLeft = true;
                 faceRight = true;
             }
