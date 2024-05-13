@@ -19,7 +19,7 @@ private:
     int x;
     int y;
     int item;
-    bool hit=0;
+    bool hit=1;
 };
 
 #endif // BOXBRICKS_H

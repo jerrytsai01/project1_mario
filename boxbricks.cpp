@@ -21,7 +21,7 @@ boxbricks::boxbricks(int x,int y,int item,QGraphicsPixmapItem *parent):QGraphics
 void boxbricks::touch(){
     if(mario::colliedTopOBJ == this->pos()){
         emit touched();
-        hit=1;
+
         setPixmap(QPixmap(":/new/prefix1/image/brick/stone brick.png"));
     }
 }
@@ -43,31 +43,34 @@ for (int i =0;i<collidingItems.size();i++) {
     }*/
 void boxbricks::obj(){
     //coin
-    if(item==1){
-        Coin::score++;
-        if(Coin::scorelabel)
-        Coin::scorelabel->setText("Score: " + QString::number(Coin::score));
-        //coin
-        QGraphicsPixmapItem *coin= new QGraphicsPixmapItem;
-        coin->setPixmap(QPixmap(":/new/prefix1/image/item/coin.png"));
-        coin->setPos(x,y-60);
-        scene()->addItem(coin);
-        QTimer *timer = new QTimer(this);
-        connect(timer, &QTimer::timeout,this, [=]()mutable {
-            scene()->removeItem(coin);
-            delete coin;
-            timer->stop();
-        });
-        timer->start(300);
-    }
-    //supermushroom
-    else if(item==2){
-        supermushroom *mushroom = new supermushroom(x,y-50);
-        scene()->addItem(mushroom);
-    }
-    //fireflower
-    else if(item==3){
-        fireflower *flower = new fireflower(x,y-50);
-        scene()->addItem(flower);
+    if(hit){
+        if(item==1){
+            Coin::score++;
+            if(Coin::scorelabel)
+            Coin::scorelabel->setText("Score: " + QString::number(Coin::score));
+            //coin
+            QGraphicsPixmapItem *coin= new QGraphicsPixmapItem;
+            coin->setPixmap(QPixmap(":/new/prefix1/image/item/coin.png"));
+            coin->setPos(x,y-60);
+            scene()->addItem(coin);
+            QTimer *timer = new QTimer(this);
+            connect(timer, &QTimer::timeout,this, [=]()mutable {
+                scene()->removeItem(coin);
+                delete coin;
+                timer->stop();
+            });
+            timer->start(300);
+        }
+        //supermushroom
+        else if(item==2){
+            supermushroom *mushroom = new supermushroom(x,y-50);
+            scene()->addItem(mushroom);
+        }
+        //fireflower
+        else if(item==3){
+            fireflower *flower = new fireflower(x,y-50);
+            scene()->addItem(flower);
+        }
+        hit=0;
     }
 }

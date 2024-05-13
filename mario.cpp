@@ -45,8 +45,8 @@ mario::mario(QGraphicsPixmapItem *parent):QGraphicsPixmapItem (parent)
     connect(timer, SIGNAL(timeout()), this, SLOT(marioDead()));
     connect(timer, SIGNAL(timeout()), this, SLOT(colliedWithMushroom()));
     connect(timer, SIGNAL(timeout()), this, SLOT(eatFireflower()));
-    connect(timer, SIGNAL(timeout()), this, SLOT(shooting()));
-    connect(timer, SIGNAL(timeout()), this, SLOT(Shooterform()));
+    //connect(timer, SIGNAL(timeout()), this, SLOT(shooting()));
+   //connect(timer, SIGNAL(timeout()), this, SLOT(Shooterform()));
     connect(timer, SIGNAL(timeout()), this, SLOT(HP()));
     connect(timer, SIGNAL(timeout()), this, SLOT(winEvent()));
     timer->start(10);

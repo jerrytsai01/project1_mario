@@ -72,7 +72,7 @@ MainWindow::MainWindow(QWidget *parent)
     //create toxic mushroom
     std::vector<std::vector<int>> mushroompos={
         //position
-        {16*w,9*h}
+        {80*w,9*h},{98*w,9*h},{99*w,9*h},{100*w,9*h}
     };
     for (size_t i = 0; i < mushroompos.size(); i ++) {
         int x = mushroompos[i][0];
@@ -85,7 +85,7 @@ MainWindow::MainWindow(QWidget *parent)
     //create waterpipe  high70
     std::vector<std::vector<int>> pipepos={
         //position
-        {3*w,9*h-20}
+        {33*w,9*h-20},{64*w,9*h-20},{68*w,9*h-20},{88*w,9*h-20}
     };
     for (size_t i = 0; i < pipepos.size(); i ++) {
         int x = pipepos[i][0];
@@ -104,19 +104,27 @@ MainWindow::MainWindow(QWidget *parent)
     scoreLabel->setStyleSheet("QLabel { color : red; font-size: 45px; }");
     scoreLabel->move(0,0);
     Coin::scorelabel = scoreLabel;
-    for(int i=1;i<10;i++){
-        Coin *coin = new Coin(200*i,200);
+    std::vector<std::vector<int>> coinpos={
+        //coin position
+        {6*w,7*h},{19*w,7*h},{20*w,7*h},{28*w,4*h},{50*w,6*h},{51*w,6*h},{50*w,3*h},{51*w,3*h},{60*w,3*h},{88*w,2*h},
+        {99*w,6*h},{100*w,6*h},{101*w,6*h},{98*w,3*h},{99*w,3*h},{100*w,3*h},{101*w,3*h},{102*w,3*h},
+        {108*w,7*h},{109*w,6*h},{110*w,7*h}
+    };
+    for (size_t i = 0; i < coinpos.size(); i ++) {
+        int x = coinpos[i][0];
+        int y = coinpos[i][1];
+        Coin *coin = new Coin(x, y);
         scene->addItem(coin);
     }
 
-    // 添加地板磚塊
+    // floorbrick
     QPixmap floorBrickPixmap(":/new/prefix1/image/brick/floor brick.png");
     const int floorbrickWidth = 50;
     const int numBricks = 7000 / floorbrickWidth;
     for (int i = 0; i < numBricks; ++i) {
         if(//floor hole postition
-                /*((i>=6)&&(i<=7)) || ((i>=35)&&(i<=45)) || ((i>=65)&&(i<=75))*/
-           0){
+                ((i>=19)&&(i<=20)) || ((i>=35)&&(i<=38)) || ((i>=66)&&(i<=67)) || ((i>=90)&&(i<=91))
+           ){
             continue;
         }
         else
@@ -129,10 +137,15 @@ MainWindow::MainWindow(QWidget *parent)
     //stone建構
     std::vector<std::vector<int>> stonebrickpos={
         //stone position
-        /*
-        {10*w,7*h},{11*w,7*h},
+        {36*w,7*h},{37*w,7*h},{41*w,5*h},{42*w,5*h},{43*w,5*h},{46*w,4*h},
+        {81*w,5*h},{82*w,5*h},{83*w,5*h},{82*w,4*h},{83*w,4*h},{83*w,3*h},
+        {97*w,7*h},{98*w,7*h},{99*w,7*h},{100*w,7*h},{101*w,7*h},{102*w,7*h},{103*w,7*h},
+        {98*w,4*h},{99*w,4*h},{100*w,4*h},{101*w,4*h},{102*w,4*h},
+        {116*w,9*h},{117*w,9*h},{118*w,9*h},{117*w,8*h},
+        //flag state
+        {128*w,9*h},{129*w,9*h},{130*w,9*h},{131*w,9*h},{132*w,9*h},{133*w,9*h},{129*w,8*h},{130*w,8*h},{131*w,8*h},{132*w,8*h},{133*w,8*h},{130*w,7*h},{131*w,7*h},{132*w,7*h},{133*w,7*h},{131*w,6*h},{132*w,6*h},{133*w,6*h},{132*w,5*h},{133*w,5*h},{133*w,4*h},
         {136*w,9*h}  //flag brick position
-        */
+
     };
     for (size_t i = 0; i < stonebrickpos.size(); i ++) {
         int x = stonebrickpos[i][0];
@@ -144,7 +157,8 @@ MainWindow::MainWindow(QWidget *parent)
     //brokenrock
     std::vector<std::vector<int>> brokenbrickpos={
         //brick position
-        {9*w,7*h},{8*w,7*h}
+        {49*w,5*h},{49*w,6*h},{49*w,7*h},{50*w,5*h},{50*w,7*h},{51*w,5*h},{51*w,7*h},{52*w,7*h},{52*w,6*h},{52*w,5*h},
+        {56*w,7*h},{55*w,7*h},{56*w,6*h},{55*w,6*h},{59*w,6*h},{60*w,6*h},{61*w,6*h},{60*w,5*h},{60*w,4*h}
     };
     for (size_t i = 0; i < brokenbrickpos.size(); i ++) {
         int x = brokenbrickpos[i][0];
@@ -156,25 +170,31 @@ MainWindow::MainWindow(QWidget *parent)
     //normalbricks
     std::vector<std::vector<int>> normalbrickpos={
         //brick position
-        {4*w,7*h},{5*w,7*h},{2*w,9*h}
+        {11*w,3*h},{117*w,5*h},{10*w,7*h},{11*w,7*h},{12*w,7*h},{27*w,7*h},{29*w,7*h}
+        ,{74*w,5*h},{75*w,7*h},{76*w,5*h},{73*w,8*h},{74*w,8*h},{76*w,8*h},{77*w,8*h},{78*w,8*h},{72*w,8*h},{78*w,9*h},{72*w,9*h}
     };
     for (size_t i = 0; i < normalbrickpos.size(); i ++) {
         int x = normalbrickpos[i][0];
         int y = normalbrickpos[i][1];
-        normalbricks *normalbrick = new normalbricks(x, y,30/*coins*/);
-
-        scene->addItem(normalbrick);
+        if(i<2){
+            normalbricks *normalbrick = new normalbricks(x, y,i+1/*coins*/);
+            scene->addItem(normalbrick);
+        }
+        else{
+            normalbricks *normalbrick = new normalbricks(x, y,0/*coins*/);
+            scene->addItem(normalbrick);
+        }
     }
 
     //boxbricks
     std::vector<std::vector<int>> boxbrickpos={
         //brick position
-        {10*w,7*h},{11*w,7*h}
+        {28*w,7*h},{75*w,5*h},{75*w,2*h}
     };
     for (size_t i = 0; i < boxbrickpos.size(); i ++) {
         int x = boxbrickpos[i][0];
         int y = boxbrickpos[i][1];
-        boxbricks *boxbrick = new boxbricks(x, y,3/*1for coin 2for mushroom 3for flower*/);
+        boxbricks *boxbrick = new boxbricks(x, y,i%3+1/*1for coin 2for mushroom 3for flower*/);
         scene->addItem(boxbrick);
     }
 

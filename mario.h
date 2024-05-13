@@ -50,7 +50,7 @@ private:
     int invincibleTimer = 0;
     //for test
     double TopY = 600, BottomY = 0;
-    int numberofBullet = 100;
+    int numberofBullet = 10000;
     bool shooterform = true, canshoot = false, flagExist = false;
     QGraphicsView *view;
     ~mario();
