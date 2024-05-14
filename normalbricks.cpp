@@ -12,7 +12,7 @@ normalbricks::normalbricks(int x,int y,int coinsum,QGraphicsPixmapItem *parent):
 {
     setPixmap(QPixmap(":/new/prefix1/image/brick/normal brick.png"));
     setPos(x,y);
-
+    icoinsum=coinsum;
     QTimer *timer =new QTimer(this);
     connect(timer,&QTimer::timeout,this,&normalbricks::touch);
     timer->start(5);
@@ -32,23 +32,7 @@ void normalbricks::touch(){
         // touch
         emit jump();
     }
-}/*
-QList<QGraphicsItem*> collidingItems =scene()-> collidingItems(this, Qt::IntersectsItemBoundingRect);
-for (int i =0;i<collidingItems.size();i++) {
-    QGraphicsItem *item = collidingItems[i];
-        if(typeid(*item) == typeid(mario)) {
-            QPointF itemPos = item->pos();
-            QRectF boundingRect = item->boundingRect();
-            qreal itemw = boundingRect.width();
-            qreal itemx = itemPos.x();
-            qreal itemy = itemPos.y();
-            qDebug()<<itemy;
-            if(itemx+itemw>=x and itemx<=x+50 and itemy <=y+50 and itemy >= y+47){
-                // touch
-                emit jump();
-            }
-        }
-    }*/
+}
 
 void normalbricks::bounce(){
     //setPos(x,y-10);
@@ -206,3 +190,7 @@ void normalbricks::coinjump(){
     timer->start(10);
 }
 
+void normalbricks::reset(){
+    coinsum=icoinsum;
+    setPixmap(QPixmap(":/new/prefix1/image/brick/normal brick.png"));
+}

@@ -26,6 +26,7 @@
 
 QPointF mario::colliedTopOBJ = QPointF(0, 0);
 int mario::hp = 3;
+int mario::faliure = 0;
 QLabel *mario::hplabel=nullptr;
 mario::mario(QGraphicsPixmapItem *parent):QGraphicsPixmapItem (parent)
 {
@@ -120,7 +121,7 @@ void mario::keyReleaseEvent(QKeyEvent *reEvent)
 //因應按鍵按下改變位置
 void mario::checkKeyState()
 {    
-    if(rightKey == true&&x()<7000){
+    if(rightKey == true&&x()<6980){
         if(!collidedRight){
             faceRight = true;
             setPos(x()+2,y());
@@ -479,6 +480,7 @@ void mario::colliedWithMushroom(){
                 else{
                     small = true;
                     invincible = true;
+                    numberofBullet =0;
                     setPos(x()-20, y());
                 }
             }
@@ -497,7 +499,7 @@ void mario::eatFireflower(){
     for(int i =0;i<collidingItems.size();i++){
         QGraphicsItem *item = collidingItems[i];
         if((typeid(*item) == typeid(fireflower))){
-            numberofBullet += 3;
+            numberofBullet += 30000000000;
         }
     }
 }
@@ -507,9 +509,11 @@ void mario::marioDead()
     if((hp <= 0)||(y() >= 650)){
         //qDebug() << "FAILURE!!!";
         small = true;
+        numberofBullet = 0;
         setPos(0, 400);
         hp = 3;
         faliure++;
+        emit over();
     }
 }
 
@@ -517,7 +521,7 @@ void mario::winEvent()
 {
     if(x() > 4850 and !flagExist){
         if (scene()) {
-            Flag = new flag();
+
             scene()->addItem(Flag);
         } else {
             qDebug() << "Error: Scene is not valid!";
@@ -570,7 +574,17 @@ void mario::InvincibleForm(){
 }
 
 void mario::tower(){
-    if(x()>=138*50 && x()<=139*50 && y()>=8*50 && y()<=10*50){
+    if(x()>=137*50 && x()<=138*50 && y()>=7*50 && y()<=10*50){
         emit over();
     }
+}
+
+void mario::reset(){
+    setPos(0,400);
+    small = true;
+    numberofBullet = 0;
+    hp = 3;
+    hplabel->setText("HP: " + QString::number(hp));
+    faliure=0;
+    Flag->setPos(6610,50);
 }

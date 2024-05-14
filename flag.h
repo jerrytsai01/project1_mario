@@ -9,6 +9,7 @@ class flag: public QObject, public QGraphicsPixmapItem
     Q_OBJECT
 public:
     flag(QGraphicsPixmapItem *parent = 0);
+
 };
 
 #endif // FLAG_H

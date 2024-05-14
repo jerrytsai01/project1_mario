@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "endwindow.h"
 #include "loginwindow.h"
+#include "mario.h"
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
@@ -16,14 +17,16 @@ int main(int argc, char *argv[])
             break;
         }
     }
-    MainWindow w;
-    //w.show();  //gamewiget
+    MainWindow *w = new MainWindow;
+    //w.show();
     loginwindow l;
     endwindow e;
-    e.show();
-    QObject::connect(&l,&loginwindow::startGame,&w,&MainWindow::show);
+    //e.show();
+    QObject::connect(&l,&loginwindow::startGame,w,&MainWindow::show);
+    QObject::connect(w,&MainWindow::over,&e,&endwindow::show);
+    QObject::connect(w,&MainWindow::over,&e,&endwindow::gg);
     QObject::connect(&e,&endwindow::reset,&l,&loginwindow::show);
-    //l.show();
+    l.show();
 
     return a.exec();
 }

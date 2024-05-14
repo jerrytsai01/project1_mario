@@ -19,6 +19,7 @@ public slots:
     void colliedWithBrick();
     void colliedWithMario();
     void hitByBullet();
+
 private :
     bool collidedTop = false, collidedBottom = true ,collidedLeft = false, collidedRight = false;
     bool faceLeft = true;
@@ -26,6 +27,10 @@ private :
     int timer = 0, deathTimer = 0;
     bool live = true;
     QGraphicsView *view;
+    int x;
+    int y;
+    int ix;
+    int iy;
 };
 
 

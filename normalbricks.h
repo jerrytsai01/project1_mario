@@ -16,16 +16,18 @@ signals:
     void cjump();
 
 
-private slots:
+public slots:
     void touch();
     void bounce();
     void getcoin();
     void coinjump();
+    void reset();
 
 private :
      int x;
      int y;
      int coinsum;
+     int icoinsum;
      int havecoin;
 
 };

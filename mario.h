@@ -1,6 +1,5 @@
 #ifndef MARIO_H
 #define MARIO_H
-
 #include <QGraphicsPixmapItem>
 #include <QObject>
 #include <QGraphicsView>
@@ -19,11 +18,12 @@ public:
     void readview(QGraphicsView *view);
     static int hp ;
     static QLabel *hplabel;
-    int score = 0, fireBall = 0, faliure = 0;
+    int score = 0, fireBall = 0;
+    static int faliure ;
     bool marioIsDead = false, win = false;
     bool collidedTop;
     bool fire = false, small = true;
-    flag *Flag;
+    flag *Flag = new flag();
     static QPointF colliedTopOBJ;
 
 signals:
@@ -44,6 +44,7 @@ public slots:
     void marioDead();
     void winEvent();
     void tower();
+    void reset();
 private:
     bool rightKey = false, leftKey = false,
          upKey = false, faceRight = true, reachTop = false;
@@ -55,7 +56,7 @@ private:
     int invincibleTimer = 0;
     //for test
     double TopY = 600, BottomY = 0;
-    int numberofBullet = 10000;
+    int numberofBullet = 0;
     bool shooterform = true, canshoot = false, flagExist = false;
     QGraphicsView *view;
     ~mario();

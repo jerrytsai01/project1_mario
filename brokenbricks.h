@@ -7,8 +7,9 @@ class brokenbricks: public QObject, public QGraphicsPixmapItem
 public:
     brokenbricks(int x,int y,QGraphicsPixmapItem *parent=0);
 
-private slots:
+public slots:
     void bounce();
+
 private :
     int x;
     int y;

@@ -3,6 +3,7 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <QGraphicsView>
+#include <QLabel>
 #include <QPushButton>
 
 class endwindow : public QMainWindow{
@@ -12,12 +13,14 @@ public:
 signals:
     void reset();
 
+public slots:
+    void gg();
+
 private:
-    QGraphicsScene *scene;
-    QGraphicsView *view;
+    QGraphicsScene *scene = new QGraphicsScene();
     QPushButton *playButton;
-
-
+    QGraphicsView *view = new QGraphicsView(scene);
+    QLabel *result = new QLabel();
 };
 
 #endif // ENDWINDOW_H

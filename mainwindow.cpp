@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
     setFixedSize(1400,600);
     setWindowTitle("SuperMario");
     // 創建場景
-    QGraphicsScene *scene = new QGraphicsScene();
+
     scene->setSceneRect(0, 0, 7000, 600); // 設置場景大小為1400x600
 
     // 添加背景圖
@@ -45,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     // 創建視圖並設置場景
-    QGraphicsView *view = new QGraphicsView(scene);
+
     view->setInteractive(true);
     view->setFixedSize(1400, 600); // 設置視圖大小為1400x600
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff); // 關閉水平滾動條
@@ -162,7 +162,7 @@ MainWindow::MainWindow(QWidget *parent)
     tower->setPixmap(QPixmap(":/new/prefix1/image/tower1.png"));
     tower->setPos(137*w,7*h);
     scene->addItem(tower);
-    //brokenrock
+    //brokenbrick
     std::vector<std::vector<int>> brokenbrickpos={
         //brick position
         {49*w,5*h},{49*w,6*h},{49*w,7*h},{50*w,5*h},{50*w,7*h},{51*w,5*h},{51*w,7*h},{52*w,7*h},{52*w,6*h},{52*w,5*h},
@@ -188,51 +188,113 @@ MainWindow::MainWindow(QWidget *parent)
         if(i<2){
             normalbricks *normalbrick = new normalbricks(x, y,i+1/*coins*/);
             scene->addItem(normalbrick);
+            connect(player, &mario::over, normalbrick, &normalbricks::reset);
         }
         else{
             normalbricks *normalbrick = new normalbricks(x, y,0/*coins*/);
             scene->addItem(normalbrick);
+            connect(player, &mario::over, normalbrick, &normalbricks::reset);
         }
+
     }
 
     //boxbricks
     std::vector<std::vector<int>> boxbrickpos={
         //brick position
-        {28*w,7*h},{75*w,5*h},{75*w,2*h},{11*w,7*h}
+        {28*w,7*h},{75*w,5*h},{75*w,2*h},{11*w,7*h},{24*w,7*h}
     };
     for (size_t i = 0; i < boxbrickpos.size(); i ++) {
         int x = boxbrickpos[i][0];
         int y = boxbrickpos[i][1];
         boxbricks *boxbrick = new boxbricks(x, y,i%3+1/*1for coin 2for mushroom 3for flower*/);
         scene->addItem(boxbrick);
+        connect(player, &mario::over, boxbrick, &boxbricks::reset);
     }
 
     // 將視圖設置為主視窗的中央窗口
     setCentralWidget(view);
 
-    // find max z value and assign to mario
-    QList<QGraphicsItem*> items = scene->items();
-    qreal maxZValue = std::numeric_limits<qreal>::min();
-    for (QGraphicsItem *item : items) {
-        qreal z = item->zValue();
-        if (z > maxZValue) {
-            maxZValue = z;
-        }
-    }
-    player->setZValue(maxZValue);
-
-    QTimer*colTimer = new QTimer(this);
-    connect(colTimer, SIGNAL(timeout()), this, SLOT(player->coll));
-
     //gameover
     connect(player, &mario::over, this, &QWidget::close);
+    connect(player, &mario::over, this, &MainWindow::over);
+    connect(player, &mario::over, this, &MainWindow::restart);
+    connect(player, &mario::over, player, &mario::reset);
+
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event) {
-    qDebug() << "Mouse Pressed at: " << event->pos();
-    QMainWindow::mousePressEvent(event); // 確保事件繼續向上傳遞
-    player->fireEvent(event->pos());
-    player->setFocus();
+    if(player->x()<=700){
+        player->fireEvent(event->pos());
+        player->setFocus();
+        qDebug() << "Mouse Pressed at: " << event->pos();
+    }
+    else{
+        QPoint pos;
+        qDebug() << "Pass 700 Mouse Pressed at: " << event->pos();
+        pos.setX(event->pos().x()+player->x()-700);
+        pos.setY(event->pos().y());
+        player->fireEvent(pos);
+        player->setFocus();
+        qDebug() << "Mouse Pressed at: " << pos;
+    }
+}
+
+void MainWindow::restart(){
+    int w=50;
+    int h=50;
+    //delete item
+    QList<QGraphicsItem*> Items =scene-> items();
+    for(int i =0;i<Items.size();i++){
+        QGraphicsItem *item = Items[i];
+        if((typeid(*item) == typeid(brokenbricks)) or (typeid(*item) == typeid(Coin)) or (typeid(*item) == typeid(toxicmushroom)) or (typeid(*item) == typeid(fireflower))){
+            scene->removeItem(item);
+            delete item;
+        }
+    }
+    //brokenbrick reconstruct
+    std::vector<std::vector<int>> brokenbrickpos={
+        //brick position
+        {49*w,5*h},{49*w,6*h},{49*w,7*h},{50*w,5*h},{50*w,7*h},{51*w,5*h},{51*w,7*h},{52*w,7*h},{52*w,6*h},{52*w,5*h},
+        {56*w,7*h},{55*w,7*h},{56*w,6*h},{55*w,6*h},{59*w,6*h},{60*w,6*h},{61*w,6*h},{60*w,5*h},{60*w,4*h}
+    };
+    for (size_t i = 0; i < brokenbrickpos.size(); i ++) {
+        int x = brokenbrickpos[i][0];
+        int y = brokenbrickpos[i][1];
+        brokenbricks *brokenbrick = new brokenbricks(x, y);
+        scene->addItem(brokenbrick);
+    }
+    //coin reconstruct
+    Coin::score = 0;
+    if(Coin::scorelabel)
+        Coin::scorelabel->setText("Score: " + QString::number(Coin::score));
+
+    std::vector<std::vector<int>> coinpos={
+        //coin position
+        {5*w,7*h},{6*w,7*h},{7*w,7*h},{8*w,7*h},{19*w,7*h},{20*w,7*h},{28*w,4*h},{36*w,5*h},{37*w,5*h},
+        {41*w,3*h},{42*w,3*h},{43*w,3*h},{50*w,6*h},{51*w,6*h},{50*w,3*h},{51*w,3*h},{60*w,3*h},{88*w,2*h},{88*w,3*h},{88*w,4*h},{88*w,5*h},{88*w,6*h},{88*w,7*h},
+        {99*w,6*h},{100*w,6*h},{101*w,6*h},{98*w,3*h},{99*w,3*h},{100*w,3*h},{101*w,3*h},{102*w,3*h},
+        {108*w,7*h},{109*w,6*h},{110*w,7*h},{101*w,8*h}
+    };
+    for (size_t i = 0; i < coinpos.size(); i ++) {
+        int x = coinpos[i][0];
+        int y = coinpos[i][1];
+        Coin *coin = new Coin(x, y);
+        scene->addItem(coin);
+    }
+    //toxicmushroom reconstruct
+    std::vector<std::vector<int>> mushroompos={
+        //position
+        {80*w,9*h},{98*w,9*h},{99*w,9*h},{100*w,9*h}
+        ,{6*w, 9*h}
+    };
+    for (size_t i = 0; i < mushroompos.size(); i ++) {
+        int x = mushroompos[i][0];
+        int y = mushroompos[i][1];
+        toxicmushroom *mushroom = new toxicmushroom(x, y);
+        scene->addItem(mushroom);
+    }
+    //mario reconstruct
+
 }
 
 MainWindow::~MainWindow()

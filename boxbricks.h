@@ -11,9 +11,10 @@ public:
 
 signals:
     void touched();
-private slots:
+public slots:
     void touch();
     void obj();
+    void reset();
 
 private:
     int x;

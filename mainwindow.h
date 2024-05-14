@@ -18,8 +18,16 @@ public:
     void mousePressEvent(QMouseEvent *event);
     ~MainWindow();
     mario *player;
+public slots:
+    void restart();
+
+signals:
+    void over();
 private:
    // Ui::MainWindow *ui;
+    QGraphicsScene *scene = new QGraphicsScene();
+    QGraphicsView *view = new QGraphicsView(scene);
+
 
 };
 #endif // MAINWINDOW_H

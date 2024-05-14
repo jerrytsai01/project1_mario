@@ -13,12 +13,13 @@
 #include <QGraphicsItem>
 #include <QList>
 
-toxicmushroom::toxicmushroom(int X,int Y,QGraphicsPixmapItem *parent):QGraphicsPixmapItem (parent)
+toxicmushroom::toxicmushroom(int X,int Y,QGraphicsPixmapItem *parent):QGraphicsPixmapItem (parent),x(X),y(Y)
 {
     setFlag(QGraphicsItem::ItemIsMovable);
     setFlag(QGraphicsItem::ItemIsSelectable);
-
-    setPos(X,Y);
+    ix=x;
+    iy=y;
+    setPos(x,y);
     setPixmap(QPixmap(":/new/prefix1/image/toxic mushroom1.png"));
 
     QTimer*timer = new QTimer(this);
@@ -36,12 +37,14 @@ toxicmushroom::toxicmushroom(int X,int Y,QGraphicsPixmapItem *parent):QGraphicsP
 //移動
 void toxicmushroom::toxicmushroom_move(){
     if(faceLeft){
-        if(x()==700) faceLeft = false;
-        else setPos(x()-1,y());
+        if(x==700) faceLeft = false;
+        else setPos(x-1,y);
+        x-=1;
     }
     else if(!faceLeft){
-        if(x()==1400) faceLeft = true;
-        else setPos(x()+1,y());
+        if(x==1400) faceLeft = true;
+        else setPos(x+1,y);
+        x+=1;
     }
 }
 
@@ -68,7 +71,8 @@ void toxicmushroom::countY(){
         //qDebug() << "velocity:" << velocity;
         //qDebug() << "countY:collideBottom:" << collidedBottom << "; collideTop:" <<collidedTop;
     }
-    setPos(x(), y()+ velocity);
+    setPos(x, y+ velocity);
+    y+=velocity;
     //qDebug() << "Y = " << y()-velocity << "+" << velocity;
 }
 
@@ -82,7 +86,7 @@ void toxicmushroom::colliedWithMario(){
             //qDebug() << "size: x from" << item->x()-25 << " to " << item->x()+25 << ";y from" << item->y()-50 << " to " << item->y()+50;
             //qDebug() << "toxicmushroom x" <<x()<<" y "<<y();
             //if(MainWindow::player.small == true)
-            if(y()-45 >= item->y() and (item->x() >= x()-50) and (item->x() <= x()+50)){
+            if(y-45 >= item->y() and (item->x() >= x-50) and (item->x() <= x+50)){
                 live = false;
             }
         }
@@ -96,7 +100,7 @@ void toxicmushroom::hitByBullet(){
         QGraphicsItem *item = collidingItems[i];
         if(typeid(*item) == typeid(bullet)){
             qDebug() << "hit by bullet";
-            qDebug() << "toxicmushroom x" <<x()<<" y "<<y();
+            qDebug() << "toxicmushroom x" <<x<<" y "<<y;
             live = false;
             qDebug() << "Toxicmushroom is killed by bullet";
         }
@@ -115,21 +119,21 @@ void toxicmushroom::colliedWithBrick(){
             //qDebug() << "collided floor brick";
             //qDebug() << "size: x from" << item->x()-25 << " to " << item->x()+25 << ";y from" << item->y()-50 << " to " << item->y()+50;
             //qDebug() << "toxicmushroom x" <<x()<<" y "<<y();
-            if((item->y()+75 >= y()) && (x() < item->x()+25) && (x() > item->x()-25))
+            if((item->y()+75 >= y) && (x < item->x()+25) && (x > item->x()-25))
                 collidedTop = true;
-            if((item->y()-75 <= y()) && (x() < item->x()+25) && (x() > item->x()-25))
+            if((item->y()-75 <= y) && (x < item->x()+25) && (x > item->x()-25))
                 collidedBottom = true;
-            if((item->x()-25 <= x()) && (y() > item->y()-48) && (y() < item->y()+48))
+            if((item->x()-25 <= x) && (y > item->y()-48) && (y < item->y()+48))
                 collidedRight = true;
-            if((item->x()+25 >= x()) && (y() > item->y()-48) && (y() < item->y()+48))
+            if((item->x()+25 >= x) && (y > item->y()-48) && (y < item->y()+48))
                 collidedLeft = true;
         }
         if(typeid (*item) == typeid (waterpipe) or typeid (*item) == typeid (normalbricks) or typeid (*item) == typeid (stonebricks)){
-            if(item->x()+50 <= x()){
+            if(item->x()+50 <= x){
                 collidedRight = true;
                 faceLeft = false;
             }
-            if(item->x()-50 >= x()){
+            if(item->x()-50 >= x){
                 collidedLeft = true;
                 faceLeft = true;
             }
@@ -151,3 +155,4 @@ void toxicmushroom::livecheck(){
         }
     }
 }
+

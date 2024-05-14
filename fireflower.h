@@ -12,6 +12,7 @@ public:
     void readview(QGraphicsView *view);
 public slots:
     void flower_eaten_by_mario();
+
 private:
     int x;
     int y;

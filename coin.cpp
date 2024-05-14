@@ -46,3 +46,4 @@ void Coin::getcoin(){
         scorelabel->setText("Score: " + QString::number(score));
 }
 
+

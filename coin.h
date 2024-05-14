@@ -18,6 +18,7 @@ signals:
 private slots:
     void touch();
     void getcoin();
+
 };
 
 #endif // COIN_H

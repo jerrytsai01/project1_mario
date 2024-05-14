@@ -109,3 +109,8 @@ void boxbricks::obj(){
         hit=0;
     }
 }
+
+void boxbricks::reset(){
+    hit=1;
+    setPixmap(QPixmap(":/new/prefix1/image/brick/box brick.png"));
+}
