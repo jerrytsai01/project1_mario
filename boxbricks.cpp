@@ -49,17 +49,52 @@ void boxbricks::obj(){
             if(Coin::scorelabel)
             Coin::scorelabel->setText("Score: " + QString::number(Coin::score));
             //coin
-            QGraphicsPixmapItem *coin= new QGraphicsPixmapItem;
-            coin->setPixmap(QPixmap(":/new/prefix1/image/item/coin.png"));
-            coin->setPos(x,y-60);
+            Coin *coin= new Coin(x,y-60);
+            int coinx=x;
+            int coiny=y-60;
             scene()->addItem(coin);
             QTimer *timer = new QTimer(this);
-            connect(timer, &QTimer::timeout,this, [=]()mutable {
-                scene()->removeItem(coin);
-                delete coin;
-                timer->stop();
+            int count =0;
+            connect(timer,&QTimer::timeout,this,[=]()mutable{
+                count++;
+                if(count ==1){
+                    coin->setPos(coinx,coiny-5);
+                    coiny=coiny-5;
+                    timer->start(50);
+                }
+                else if(count ==2){
+                    coin->setPos(coinx,coiny-3);
+                    coiny=coiny-3;
+                    timer->start(50);
+                }
+                else if(count ==3){
+                    coin->setPos(coinx,coiny-1);
+                    coiny=coiny-1;
+                    timer->start(50);
+                }
+                else if(count ==4){
+                    coin->setPos(coinx,coiny+1);
+                    coiny=coiny+1;
+                    timer->start(50);
+                }
+                else if(count ==5){
+                    coin->setPos(coinx,coiny+3);
+                    coiny=coiny+3;
+                    timer->start(50);
+                }
+                else if(count ==6){
+                    coin->setPos(coinx,coiny+5);
+                    coiny=coiny+5;
+                    timer->start(50);
+                }
+                else {
+                    timer->stop();
+                    scene()->removeItem(coin);
+                    delete coin;
+                    count =0;
+                }
             });
-            timer->start(300);
+            timer->start(10);
         }
         //supermushroom
         else if(item==2){

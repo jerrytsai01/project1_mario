@@ -5,5 +5,5 @@
 flag_pole::flag_pole()
 {
     setPixmap(QPixmap(":/new/prefix1/image/item/flag-pole.png"));
-    setPos(6815,50);
+    setPos(6665,50);
 }

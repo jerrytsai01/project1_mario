@@ -18,6 +18,7 @@ normalbricks::normalbricks(int x,int y,int coinsum,QGraphicsPixmapItem *parent):
     timer->start(5);
     connect(this, SIGNAL(jump()), this, SLOT(bounce()));
     connect(this, SIGNAL(jump()), this, SLOT(getcoin()));
+    connect(this, SIGNAL(cjump()), this, SLOT(coinjump()));
     if(coinsum>0){
         havecoin=1;
     }
@@ -143,23 +144,7 @@ void normalbricks::bounce(){
 void normalbricks::getcoin(){
     if(havecoin){
         if(coinsum>0){
-            Coin::score++;
-            if(Coin::scorelabel)
-            Coin::scorelabel->setText("Score: " + QString::number(Coin::score));
-            coinsum--;
-            //coin
-            QGraphicsPixmapItem *coin= new QGraphicsPixmapItem;
-            coin->setPixmap(QPixmap(":/new/prefix1/image/item/coin.png"));
-            coin->setPos(x,y-60);
-            scene()->addItem(coin);
-            QTimer *timer = new QTimer(this);
-
-            connect(timer, &QTimer::timeout,this, [=]()mutable {
-                scene()->removeItem(coin);
-                delete coin;
-                timer->stop();
-            });
-            timer->start(300);
+            emit cjump();
         }
         if(coinsum==0){
             setPixmap(QPixmap(":/new/prefix1/image/brick/stone brick.png"));
@@ -167,4 +152,57 @@ void normalbricks::getcoin(){
     }
 }
 
+void normalbricks::coinjump(){
+    Coin::score++;
+    if(Coin::scorelabel)
+    Coin::scorelabel->setText("Score: " + QString::number(Coin::score));
+    coinsum--;
+    //coin
+    Coin *coin= new Coin(x,y-60);
+    int coinx=x;
+    int coiny=y-60;
+    scene()->addItem(coin);
+    QTimer *timer = new QTimer(this);
+    int count =0;
+    connect(timer,&QTimer::timeout,this,[=]()mutable{
+        count++;
+        if(count ==1){
+            coin->setPos(coinx,coiny-5);
+            coiny=coiny-5;
+            timer->start(50);
+        }
+        else if(count ==2){
+            coin->setPos(coinx,coiny-3);
+            coiny=coiny-3;
+            timer->start(50);
+        }
+        else if(count ==3){
+            coin->setPos(coinx,coiny-1);
+            coiny=coiny-1;
+            timer->start(50);
+        }
+        else if(count ==4){
+            coin->setPos(coinx,coiny+1);
+            coiny=coiny+1;
+            timer->start(50);
+        }
+        else if(count ==5){
+            coin->setPos(coinx,coiny+3);
+            coiny=coiny+3;
+            timer->start(50);
+        }
+        else if(count ==6){
+            coin->setPos(coinx,coiny+5);
+            coiny=coiny+5;
+            timer->start(50);
+        }
+        else {
+            timer->stop();
+            scene()->removeItem(coin);
+            delete coin;
+            count =0;
+        }
+    });
+    timer->start(10);
+}
 

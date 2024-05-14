@@ -47,6 +47,7 @@ mario::mario(QGraphicsPixmapItem *parent):QGraphicsPixmapItem (parent)
     connect(timer, SIGNAL(timeout()), this, SLOT(eatFireflower()));
     connect(timer, SIGNAL(timeout()), this, SLOT(HP()));
     connect(timer, SIGNAL(timeout()), this, SLOT(winEvent()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(tower()));
     timer->start(10);
 
     QTimer *Timer2 = new QTimer(this);
@@ -514,7 +515,7 @@ void mario::marioDead()
 
 void mario::winEvent()
 {
-    if(x() > 5000 and !flagExist){
+    if(x() > 4850 and !flagExist){
         if (scene()) {
             Flag = new flag();
             scene()->addItem(Flag);
@@ -527,7 +528,7 @@ void mario::winEvent()
         if(Flag->y() < 390){
             Flag->setPos(Flag->x(), Flag->y()+1.8);
             if(!collidedBottom){
-                setPos(6775, y()+1.8);
+                setPos(6625, y()+1.8);
             }
             else{
                 setPos(x(),y());
@@ -535,7 +536,7 @@ void mario::winEvent()
         }
         else{
             win = false;
-            setPos(6850, 400);
+            setPos(6700, 400);
         }
     }
 }
@@ -568,3 +569,8 @@ void mario::InvincibleForm(){
     }
 }
 
+void mario::tower(){
+    if(x()>=138*50 && x()<=139*50 && y()>=8*50 && y()<=10*50){
+        emit over();
+    }
+}

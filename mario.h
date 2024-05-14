@@ -25,6 +25,10 @@ public:
     bool fire = false, small = true;
     flag *Flag;
     static QPointF colliedTopOBJ;
+
+signals:
+    void over();
+
 public slots:
     void checkKeyState();
     void gravity();
@@ -39,6 +43,7 @@ public slots:
     void InvincibleForm();
     void marioDead();
     void winEvent();
+    void tower();
 private:
     bool rightKey = false, leftKey = false,
          upKey = false, faceRight = true, reachTop = false;

@@ -11,6 +11,7 @@ CONFIG += c++11
 SOURCES += \
     brokenbricks.cpp \
     bullet.cpp \
+    endwindow.cpp \
     fireflower.cpp \
     flag.cpp \
     flag_pole.cpp \
@@ -30,6 +31,7 @@ SOURCES += \
 HEADERS += \
     brokenbricks.h \
     bullet.h \
+    endwindow.h \
     fireflower.h \
     flag.h \
     flag_pole.h \

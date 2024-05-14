@@ -25,6 +25,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+
     setFixedSize(1400,600);
     setWindowTitle("SuperMario");
     // 創建場景
@@ -86,7 +87,7 @@ MainWindow::MainWindow(QWidget *parent)
     //create waterpipe  high70
     std::vector<std::vector<int>> pipepos={
         //position
-        {33*w,9*h-20},{64*w,9*h-20},{68*w,9*h-20},{88*w,9*h-20}
+        {33*w,9*h-20},{64*w,9*h-20},{68*w,9*h-20},{88*w,9*h-20},{92*w,9*h-20}
         /*,{4*w,9*h-20},{9*w, 9*h-20}*/
     };
     for (size_t i = 0; i < pipepos.size(); i ++) {
@@ -108,9 +109,10 @@ MainWindow::MainWindow(QWidget *parent)
     Coin::scorelabel = scoreLabel;
     std::vector<std::vector<int>> coinpos={
         //coin position
-        {6*w,7*h},{19*w,7*h},{20*w,7*h},{28*w,4*h},{50*w,6*h},{51*w,6*h},{50*w,3*h},{51*w,3*h},{60*w,3*h},{88*w,2*h},
+        {5*w,7*h},{6*w,7*h},{7*w,7*h},{8*w,7*h},{19*w,7*h},{20*w,7*h},{28*w,4*h},{36*w,5*h},{37*w,5*h},
+        {41*w,3*h},{42*w,3*h},{43*w,3*h},{50*w,6*h},{51*w,6*h},{50*w,3*h},{51*w,3*h},{60*w,3*h},{88*w,2*h},{88*w,3*h},{88*w,4*h},{88*w,5*h},{88*w,6*h},{88*w,7*h},
         {99*w,6*h},{100*w,6*h},{101*w,6*h},{98*w,3*h},{99*w,3*h},{100*w,3*h},{101*w,3*h},{102*w,3*h},
-        {108*w,7*h},{109*w,6*h},{110*w,7*h}
+        {108*w,7*h},{109*w,6*h},{110*w,7*h},{101*w,8*h}
     };
     for (size_t i = 0; i < coinpos.size(); i ++) {
         int x = coinpos[i][0];
@@ -145,8 +147,8 @@ MainWindow::MainWindow(QWidget *parent)
         {98*w,4*h},{99*w,4*h},{100*w,4*h},{101*w,4*h},{102*w,4*h},
         {116*w,9*h},{117*w,9*h},{118*w,9*h},{117*w,8*h},
         //flag state
-        {128*w,9*h},{129*w,9*h},{130*w,9*h},{131*w,9*h},{132*w,9*h},{133*w,9*h},{129*w,8*h},{130*w,8*h},{131*w,8*h},{132*w,8*h},{133*w,8*h},{130*w,7*h},{131*w,7*h},{132*w,7*h},{133*w,7*h},{131*w,6*h},{132*w,6*h},{133*w,6*h},{132*w,5*h},{133*w,5*h},{133*w,4*h},
-        {136*w,9*h}  //flag brick position
+        {125*w,9*h},{126*w,9*h},{127*w,9*h},{128*w,9*h},{129*w,9*h},{130*w,9*h},{126*w,8*h},{127*w,8*h},{128*w,8*h},{129*w,8*h},{130*w,8*h},{127*w,7*h},{128*w,7*h},{129*w,7*h},{130*w,7*h},{128*w,6*h},{129*w,6*h},{130*w,6*h},{129*w,5*h},{130*w,5*h},{130*w,4*h},
+        {133*w,9*h}  //flag brick position
 
     };
     for (size_t i = 0; i < stonebrickpos.size(); i ++) {
@@ -155,7 +157,11 @@ MainWindow::MainWindow(QWidget *parent)
         stonebricks *brick = new stonebricks(x, y);
         scene->addItem(brick);
     }
-
+    //hostel
+    QGraphicsPixmapItem *tower = new QGraphicsPixmapItem;
+    tower->setPixmap(QPixmap(":/new/prefix1/image/tower1.png"));
+    tower->setPos(137*w,7*h);
+    scene->addItem(tower);
     //brokenrock
     std::vector<std::vector<int>> brokenbrickpos={
         //brick position
@@ -172,8 +178,8 @@ MainWindow::MainWindow(QWidget *parent)
     //normalbricks
     std::vector<std::vector<int>> normalbrickpos={
         //brick position
-        {117*w,5*h},{10*w,7*h},{12*w,7*h},{27*w,7*h},{29*w,7*h}
-        ,{74*w,5*h},{75*w,7*h},{76*w,5*h},{73*w,8*h},{74*w,8*h},{76*w,8*h},{77*w,8*h},{78*w,8*h},{72*w,8*h},{78*w,9*h},{72*w,9*h}
+        {11*w,4*h},{117*w,5*h},{10*w,7*h},{12*w,7*h},{27*w,7*h},{29*w,7*h}
+        ,{74*w,5*h},{75*w,8*h},{76*w,5*h},{73*w,8*h},{74*w,8*h},{76*w,8*h},{77*w,8*h},{78*w,8*h},{72*w,8*h},{78*w,9*h},{72*w,9*h}
         ,{4*w, 9*h}, {9*w, 9*h}
     };
     for (size_t i = 0; i < normalbrickpos.size(); i ++) {
@@ -192,7 +198,7 @@ MainWindow::MainWindow(QWidget *parent)
     //boxbricks
     std::vector<std::vector<int>> boxbrickpos={
         //brick position
-        {28*w,7*h},{75*w,5*h},{11*w,4*h},{75*w,2*h},{11*w,7*h}
+        {28*w,7*h},{75*w,5*h},{75*w,2*h},{11*w,7*h}
     };
     for (size_t i = 0; i < boxbrickpos.size(); i ++) {
         int x = boxbrickpos[i][0];
@@ -217,6 +223,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     QTimer*colTimer = new QTimer(this);
     connect(colTimer, SIGNAL(timeout()), this, SLOT(player->coll));
+
+    //gameover
+    connect(player, &mario::over, this, &QWidget::close);
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event) {

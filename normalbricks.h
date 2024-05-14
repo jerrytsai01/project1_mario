@@ -13,12 +13,14 @@ public:
 
 signals:
     void jump();
+    void cjump();
 
 
 private slots:
     void touch();
     void bounce();
     void getcoin();
+    void coinjump();
 
 private :
      int x;
